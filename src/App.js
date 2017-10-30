@@ -28,7 +28,7 @@ class App extends Component {
     this.onResize = this.onResize.bind(this)
     this.onHover = this.onHover.bind(this)
     this.onBrush = this.onBrush.bind(this)
-    this.state = { screenWidth: 1000, screenHeight: 500, hover: "none", brushExtent: [0,40] }
+    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40] }
 
   }
 
@@ -55,7 +55,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <h2>d3ia dashboard</h2>
+          <h2>ED Shifts</h2>
         </div>
         <div>
         <StatLine allData={appdata} filteredData={filteredAppdata} />
