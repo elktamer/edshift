@@ -1,0 +1,1078 @@
+[{
+	"id": 1,
+	"code": "1",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T12:00:00.000Z",
+	"endTimeString": "2016-04-01T18:00:00.000Z",
+	"night": false,
+	"description": " Morning ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 2,
+	"code": "2",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T13:00:00.000Z",
+	"endTimeString": "2016-04-01T20:00:00.000Z",
+	"night": false,
+	"description": " Morning ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 3,
+	"code": "3",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T15:00:00.000Z",
+	"endTimeString": "2016-04-01T22:00:00.000Z",
+	"night": false,
+	"description": " Morning ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 4,
+	"code": "4",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T16:00:00.000Z",
+	"endTimeString": "2016-04-01T22:00:00.000Z",
+	"night": false,
+	"description": " Day ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 5,
+	"code": "F1",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T16:00:00.000Z",
+	"endTimeString": "2016-04-01T23:00:00.000Z",
+	"night": false,
+	"description": " Minor care",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 6,
+	"code": "6",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T17:00:00.000Z",
+	"endTimeString": "2016-04-02T00:00:00.000Z",
+	"night": false,
+	"description": " Day ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 7,
+	"code": "7",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T19:00:00.000Z",
+	"endTimeString": "2016-04-02T01:00:00.000Z",
+	"night": false,
+	"description": " Day ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 8,
+	"code": "8",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T20:00:00.000Z",
+	"endTimeString": "2016-04-02T02:00:00.000Z",
+	"night": false,
+	"description": " Day ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 9,
+	"code": "9",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T21:00:00.000Z",
+	"endTimeString": "2016-04-02T04:00:00.000Z",
+	"night": false,
+	"description": " Evening ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 10,
+	"code": "10",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T23:00:00.000Z",
+	"endTimeString": "2016-04-02T05:59:00.000Z",
+	"night": false,
+	"description": " Evening ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 11,
+	"code": "F2",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T23:00:00.000Z",
+	"endTimeString": "2016-04-02T05:59:00.000Z",
+	"night": false,
+	"description": " Minor care",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 12,
+	"code": "11",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T00:00:00.000Z",
+	"endTimeString": "2016-04-01T07:00:00.000Z",
+	"night": false,
+	"description": " Evening ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 13,
+	"code": "12",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T01:00:00.000Z",
+	"endTimeString": "2016-04-01T07:00:00.000Z",
+	"night": false,
+	"description": " Evening ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 14,
+	"code": "14",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T05:00:00.000Z",
+	"endTimeString": "2016-04-01T12:00:00.000Z",
+	"night": true,
+	"description": " Night ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 15,
+	"code": "15",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T05:59:00.000Z",
+	"endTimeString": "2016-04-01T13:00:00.000Z",
+	"night": true,
+	"description": " Night ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 24,
+	"code": "5",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T17:00:00.000Z",
+	"endTimeString": "2016-04-01T23:00:00.000Z",
+	"night": false,
+	"description": " Day ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 25,
+	"code": "13",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T02:00:00.000Z",
+	"endTimeString": "2016-04-01T08:00:00.000Z",
+	"night": false,
+	"description": " Evening ",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 2,
+		"name": "RGH",
+		"nurseRoster": {
+			"id": 2,
+			"code": "RGH"
+		}
+	},
+	"location": {
+		"id": 3,
+		"name": "RGH"
+	}
+},
+{
+	"id": 63,
+	"code": "F1",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T12:00:00.000Z",
+	"endTimeString": "2016-04-01T19:00:00.000Z",
+	"night": false,
+	"description": "Day FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 64,
+	"code": "F2",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T13:00:00.000Z",
+	"endTimeString": "2016-04-01T20:00:00.000Z",
+	"night": false,
+	"description": "Day FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 65,
+	"code": "F3",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T14:00:00.000Z",
+	"endTimeString": "2016-04-01T21:00:00.000Z",
+	"night": false,
+	"description": "Day FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 66,
+	"code": "F4",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T16:00:00.000Z",
+	"endTimeString": "2016-04-01T23:00:00.000Z",
+	"night": false,
+	"description": "Day FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 67,
+	"code": "FM1",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T16:01:00.000Z",
+	"endTimeString": "2016-04-01T23:00:00.000Z",
+	"night": false,
+	"description": "Minor FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 68,
+	"code": "F5",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T17:00:00.000Z",
+	"endTimeString": "2016-04-02T00:00:00.000Z",
+	"night": false,
+	"description": "Day FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 69,
+	"code": "F6",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T18:00:00.000Z",
+	"endTimeString": "2016-04-02T01:00:00.000Z",
+	"night": false,
+	"description": "Day FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 70,
+	"code": "F7",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T20:00:00.000Z",
+	"endTimeString": "2016-04-02T03:00:00.000Z",
+	"night": false,
+	"description": "Evening FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 71,
+	"code": "F8",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T22:00:00.000Z",
+	"endTimeString": "2016-04-02T05:00:00.000Z",
+	"night": false,
+	"description": "Evening FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 72,
+	"code": "F9",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T23:00:00.000Z",
+	"endTimeString": "2016-04-02T05:59:00.000Z",
+	"night": false,
+	"description": "Evening FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 73,
+	"code": "FM2",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T23:01:00.000Z",
+	"endTimeString": "2016-04-02T05:59:00.000Z",
+	"night": false,
+	"description": "Minor FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 74,
+	"code": "F10",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T00:00:00.000Z",
+	"endTimeString": "2016-04-01T07:00:00.000Z",
+	"night": false,
+	"description": "Evening FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 75,
+	"code": "F11",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T01:00:00.000Z",
+	"endTimeString": "2016-04-01T08:00:00.000Z",
+	"night": false,
+	"description": "Evening FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 76,
+	"code": "F12",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T02:00:00.000Z",
+	"endTimeString": "2016-04-01T09:00:00.000Z",
+	"night": false,
+	"description": "Evening FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 77,
+	"code": "F13",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T05:00:00.000Z",
+	"endTimeString": "2016-04-01T12:00:00.000Z",
+	"night": true,
+	"description": "Night FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 78,
+	"code": "F14",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T05:59:00.000Z",
+	"endTimeString": "2016-04-01T13:00:00.000Z",
+	"night": true,
+	"description": "Night FMC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+},
+{
+	"id": 79,
+	"code": "P1",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T12:00:00.000Z",
+	"endTimeString": "2016-04-01T19:00:00.000Z",
+	"night": false,
+	"description": "Day PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 80,
+	"code": "P2",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T13:00:00.000Z",
+	"endTimeString": "2016-04-01T20:00:00.000Z",
+	"night": false,
+	"description": "Day PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 81,
+	"code": "P3",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T15:00:00.000Z",
+	"endTimeString": "2016-04-01T22:00:00.000Z",
+	"night": false,
+	"description": "Day PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 82,
+	"code": "P4",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T16:00:00.000Z",
+	"endTimeString": "2016-04-01T23:00:00.000Z",
+	"night": false,
+	"description": "Day PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 83,
+	"code": "PM1",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T16:01:00.000Z",
+	"endTimeString": "2016-04-01T23:00:00.000Z",
+	"night": false,
+	"description": "Minor PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 84,
+	"code": "P5",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T17:00:00.000Z",
+	"endTimeString": "2016-04-02T00:00:00.000Z",
+	"night": false,
+	"description": "Day PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 85,
+	"code": "P6",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T19:00:00.000Z",
+	"endTimeString": "2016-04-02T02:00:00.000Z",
+	"night": false,
+	"description": "Day PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 86,
+	"code": "P7",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T21:00:00.000Z",
+	"endTimeString": "2016-04-02T04:00:00.000Z",
+	"night": false,
+	"description": "Evening PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 87,
+	"code": "P8",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T22:00:00.000Z",
+	"endTimeString": "2016-04-02T05:00:00.000Z",
+	"night": false,
+	"description": "Evening PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 88,
+	"code": "P9",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T23:00:00.000Z",
+	"endTimeString": "2016-04-02T05:59:00.000Z",
+	"night": false,
+	"description": "Evening PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 89,
+	"code": "PM2",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T23:01:00.000Z",
+	"endTimeString": "2016-04-02T05:59:00.000Z",
+	"night": false,
+	"description": "Minor PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 90,
+	"code": "P10",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T01:00:00.000Z",
+	"endTimeString": "2016-04-01T08:00:00.000Z",
+	"night": false,
+	"description": "Evening PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 91,
+	"code": "P11",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T02:00:00.000Z",
+	"endTimeString": "2016-04-02T08:00:00.000Z",
+	"night": false,
+	"description": "Evening PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 92,
+	"code": "P12",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T05:00:00.000Z",
+	"endTimeString": "2016-04-01T12:00:00.000Z",
+	"night": true,
+	"description": "Night PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 93,
+	"code": "P13",
+	"dayIndex": null,
+	"startTimeString": "2016-04-02T05:59:00.000Z",
+	"endTimeString": "2016-04-01T13:00:00.000Z",
+	"night": true,
+	"description": "Night PLC",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 2,
+		"name": "PLC"
+	}
+},
+{
+	"id": 94,
+	"code": "FW",
+	"dayIndex": null,
+	"startTimeString": "2016-04-01T21:00:31.000Z",
+	"endTimeString": "2016-04-02T03:00:45.000Z",
+	"night": false,
+	"description": "mon to fri",
+	"skills": [],
+	"schedulingGroup": {
+		"id": 1,
+		"name": "FMC",
+		"nurseRoster": {
+			"id": 1,
+			"code": "FMC"
+		}
+	},
+	"location": {
+		"id": 1,
+		"name": "FMC"
+	}
+}]
