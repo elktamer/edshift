@@ -2,16 +2,22 @@ import React, { Component } from 'react'
 import './App.css'
 import WorldMap from './WorldMap'
 import BarChart from './BarChart'
+import WeekChart from './WeekChart'
+
 import StreamGraph from './StreamGraph'
 import Brush from './Brush'
 import StatLine from './StatLine'
 import worlddata from './world'
+import shiftdate from './shiftTypes'
 import { range } from 'd3-array'
 import { scaleThreshold } from 'd3-scale'
 import { geoCentroid } from 'd3-geo'
 
 const appdata = worlddata.features
   .filter(d => geoCentroid(d)[0] < -20)
+
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  const data = require('dsv-loader!./arrivals.csv');
 
 appdata
   .forEach((d,i) => {
@@ -63,6 +69,8 @@ class App extends Component {
         <Brush changeBrush={this.onBrush} size={[this.state.screenWidth, 50]} />
         <WorldMap hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
         <BarChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
+        <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
+
         </div>
       </div>
     )
