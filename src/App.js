@@ -80,6 +80,7 @@ function loadData() {
     input.forEach(function(d, row) {
       console.log(d);
     });
+    arrivalData 
   });
 }
 export default App
