@@ -26,6 +26,13 @@ const colorScale = d3.scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#
 class App extends Component {
   constructor(props){
     super(props)
+    d3.text("./arrivals.csv", function(textString) {
+
+	var input = d3.csvParse(textString);
+  input.forEach(function (d, row){
+    console.log( d );
+  });
+});
     this.onResize = this.onResize.bind(this)
     this.onHover = this.onHover.bind(this)
     this.onBrush = this.onBrush.bind(this)
