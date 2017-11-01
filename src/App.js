@@ -9,24 +9,19 @@ import Brush from './Brush'
 import StatLine from './StatLine'
 import worlddata from './world'
 import shiftdata from './shiftTypes'
-import { range } from 'd3-array'
-import { scaleThreshold } from 'd3-scale'
-import { geoCentroid } from 'd3-geo'
+import * as d3 from 'd3'
 
 const appdata = worlddata.features
-  .filter(d => geoCentroid(d)[0] < -20)
-
-  // eslint-disable-next-line import/no-webpack-loader-syntax
-  const data = require('dsv-loader!./arrivals.csv');
+  .filter(d => d3.geoCentroid(d)[0] < -20)
 
 appdata
   .forEach((d,i) => {
     const offset = Math.random()
     d.launchday = i
-    d.data = range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
+    d.data = d3.range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
   })
 
-const colorScale = scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
+const colorScale = d3.scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
 
 class App extends Component {
   constructor(props){
