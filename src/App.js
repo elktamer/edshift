@@ -20,24 +20,18 @@ appdata
     d.launchday = i
     d.data = d3.range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
   })
+var arrivalData = [];
+loadData();
 
 const colorScale = d3.scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
 
 class App extends Component {
   constructor(props){
     super(props)
-    d3.text("./arrivals.csv", function(textString) {
-
-	var input = d3.csvParse(textString);
-  input.forEach(function (d, row){
-    console.log( d );
-  });
-});
     this.onResize = this.onResize.bind(this)
     this.onHover = this.onHover.bind(this)
     this.onBrush = this.onBrush.bind(this)
     this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40] }
-
   }
 
   onResize() {
@@ -71,7 +65,7 @@ class App extends Component {
         <Brush changeBrush={this.onBrush} size={[this.state.screenWidth, 50]} />
         <WorldMap hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
         <BarChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
-        <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
+        <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={arrivalData} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
 
         </div>
       </div>
@@ -79,4 +73,13 @@ class App extends Component {
   }
 }
 
+function loadData() {
+  d3.text("./arrivals.csv", function(textString) {
+
+    var input = d3.csvParse(textString);
+    input.forEach(function(d, row) {
+      console.log(d);
+    });
+  });
+}
 export default App
