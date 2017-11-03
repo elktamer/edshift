@@ -67,7 +67,7 @@ class App extends Component {
       <Brush changeBrush={this.onBrush} size={[this.state.screenWidth, 50]} />
       <WorldMap hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
       <BarChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
-      <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={historicalData} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
+      <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={historicalData} size={[this.state.screenWidth , this.state.screenHeight / 2]} />
 
       </div>
       </div>
@@ -87,24 +87,24 @@ function loadData(datatype) {
     var input = d3.csvParseRows(textString);
     var location = "";
     input.forEach(function(d, row) {
-      if (d[0] == ""){
+      if (d[0] === ""){
         d[0] = location;
       }else{
         location = d[0];
-        if( typeof historicalData[location] == "undefined"){
+        if( typeof historicalData[location] === "undefined"){
           historicalData[location] = {};
           historicalData[location][datatype]=[];
         }
       }
 
       for( var k =0; k < d.length-1; k++){
-        if( d[1] == "Total") continue;
+        if( d[1] === "Total") continue;
         if (k > 0){
           d[k] = +d[k];
         }
         if( k > 1 ){
           var ctasNumber = (k - 2) % 6;
-          if( typeof historicalData[location][datatype][ctasNumber] == "undefined"){
+          if( typeof historicalData[location][datatype][ctasNumber] === "undefined"){
             historicalData[location][datatype][ctasNumber]=[];
           }
           if( ctasNumber < ctasMax &&  ctasNumber > 0){

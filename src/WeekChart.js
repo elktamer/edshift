@@ -24,20 +24,22 @@ class WeekChart extends Component {
 
   createWeekChart() {
     const g = this.node;
-    const dataCheck = this.props.data;
-    const height = this.props.size[0];
-    const width = this.props.size[1];
+    if( typeof this.props.data.RGH === "undefined"){
+      return null;
+    }
+    const dataCheck = this.props.data.RGH.arrivals;
+    const height = this.props.size[1];
+    const width = this.props.size[0];
     var daysOfWeek = d3.scaleBand()
     .domain(["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday"])
     .range([0, this.props.size[1]]);
     var  y = d3.scaleLinear()
     .domain([0, 25])
-    .range([height, 0]);
+    .range([0,height]);
     var x = d3.scaleLinear()
     .domain([0, 168])
     .range([0, width]);
     var z = d3.scaleOrdinal(d3.schemeCategory10);
-
 
     var yAxisLeft = d3.axisLeft().scale(y)
     .ticks(5);
@@ -55,7 +57,7 @@ class WeekChart extends Component {
     .data([0])
     .enter()
     .append("g").append("g")
-    .attr("class", "axis axis--x")
+    .attr("class", "axis axis--y")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(daysOfWeek));
 
@@ -64,7 +66,7 @@ class WeekChart extends Component {
     .data([0])
     .enter()
     .append("g").selectAll(".serie")
-    .data([0])
+    .data(dataCheck)
     .enter().append("g")
     .attr("class", "serie")
     .append("path")
