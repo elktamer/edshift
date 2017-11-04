@@ -27,6 +27,20 @@ function dayForHour(hour){
 
 }
 
+function doctorsPerHour( shiftHours ){
+	var weekly = [];
+	var minor = false;
+	for( var hour = 0; hour < 168; hour++){
+		var mdCount = 0;
+		for( var i =0; i < shiftHours.length;i++ ){
+			if( shiftHours[i].time == hour && shiftHours[i].value == 1 && shiftHours[i].minor == minor)
+				mdCount++;
+		}
+		weekly.push(mdCount);
+	}
+	return weekly;
+}
+
 class ShiftUtil{
  shift2Data(site, shifts) {
 
@@ -55,7 +69,7 @@ class ShiftUtil{
 					radialData.push({ key: d.code, value: working, time: hour, minor: (d.minor==true) });
 				});
 			}
-			return radialData;
+			return doctorsPerHour(radialData);
 }
 
 
