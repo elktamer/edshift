@@ -24,6 +24,8 @@ appdata
   d.launchday = i
   d.data = d3.range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
 })
+var sUtil = new ShiftUtil();
+var shiftCapacity = sUtil.shift2Data("RGH", shiftdata);
 const ctasMax = 3;
 
 var historicalData = {};
