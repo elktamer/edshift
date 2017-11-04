@@ -1,11 +1,13 @@
+import * as d3 from 'd3'
+
 class ShiftUtil{
-function shift2Data(shifts) {
+ shift2Data(site, shifts) {
 			var baseDateFormat = d3.timeParse("%Y-%m-%dT%X.000Z");
 
 			var radialData = [];
-			for (hour = 0; hour < 168; hour++) {
+			for (var hour = 0; hour < 168; hour++) {
 				shifts.filter(function(d){
-					return d.location.name == site.name;
+					return d.location.name == site;
 				})
 				.forEach(function (d) {
 					var start = baseDateFormat(d.startTimeString).getHours() - 6
@@ -17,7 +19,7 @@ function shift2Data(shifts) {
 
 					var working = 0;
 					var day_hour = hour % 24;
-					if( onDay( d, hour) ){
+					if( this.onDay( d, hour) ){
 					  if ((day_hour > start && day_hour <= end) ||
 						(end < start && ((day_hour > start && day_hour >= end) || (day_hour < start && day_hour <= end)))) {
 						  working = 1;
@@ -29,16 +31,16 @@ function shift2Data(shifts) {
 			return radialData;
 }
 
-function onDay( shift, hour){
+ onDay( shift, hour){
  var daysForShift= shift.description.split(' ');
  for(var i=0; i < daysForShift.length;i++){
-	if( daysForShift[i] == dayForHour(hour))
+	if( daysForShift[i] == this.dayForHour(hour))
 		return true;
  }
  return false;
 }
 
-function dayForHour(hour){
+ dayForHour(hour){
 if( hour < 24 )
 	return "Sunday";
 if( hour < 48 )
