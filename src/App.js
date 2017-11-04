@@ -67,7 +67,7 @@ class App extends Component {
       <Brush changeBrush={this.onBrush} size={[this.state.screenWidth, 50]} />
       <WorldMap hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
       <BarChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
-      <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={historicalData} size={[this.state.screenWidth , this.state.screenHeight / 2]} />
+      <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]} />
 
       </div>
       </div>
