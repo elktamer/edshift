@@ -27,7 +27,7 @@ class WeekChart extends Component {
     if( typeof this.props.data.RGH === "undefined"){
       return null;
     }
-    const dataCheck = this.props.data.RGH.arrivals;
+    const dataCheck = this.props.data[this.props.site].arrivals;
     const height = this.props.size[1];
     const width = this.props.size[0];
     var daysOfWeek = d3.scaleBand()

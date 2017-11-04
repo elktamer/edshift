@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import {RadioGroup, Radio} from 'react-radio-group'
+
 import './App.css'
 import WorldMap from './WorldMap'
 import BarChart from './BarChart'
@@ -10,6 +12,7 @@ import StatLine from './StatLine'
 import worlddata from './world'
 import shiftdata from './shiftTypes'
 import * as d3 from 'd3'
+
 
 const appdata = worlddata.features
 .filter(d => d3.geoCentroid(d)[0] < -20)
@@ -33,7 +36,8 @@ class App extends Component {
     this.onResize = this.onResize.bind(this)
     this.onHover = this.onHover.bind(this)
     this.onBrush = this.onBrush.bind(this)
-    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40] }
+    this.handleSiteChange = this.handleSiteChange.bind(this)
+    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH" }
   }
 
   onResize() {
@@ -47,7 +51,9 @@ class App extends Component {
   onBrush(d) {
     this.setState({ brushExtent: d })
   }
-
+  handleSiteChange(d){
+    this.setState({site:d})
+  }
   componentDidMount() {
     window.addEventListener('resize', this.onResize, false)
     this.onResize()
@@ -62,12 +68,17 @@ class App extends Component {
       <h2>ED Shifts</h2>
       </div>
       <div>
-      <StatLine allData={appdata} filteredData={filteredAppdata} />
-      <StreamGraph hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth, this.state.screenHeight / 2]} />
-      <Brush changeBrush={this.onBrush} size={[this.state.screenWidth, 50]} />
-      <WorldMap hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
-      <BarChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={filteredAppdata} size={[this.state.screenWidth / 2, this.state.screenHeight / 2]} />
-      <WeekChart hoverElement={this.state.hover} onHover={this.onHover} colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]} />
+      <RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
+        <Radio value="RGH" />RGH
+        <Radio value="FMC" />FMC
+        <Radio value="PLC" />PLC
+        <Radio value="SHC" />SHC
+        <Radio value="ACH" />ACH
+      </RadioGroup>
+
+      <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
+      colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}
+      site={this.state.site} />
 
       </div>
       </div>
