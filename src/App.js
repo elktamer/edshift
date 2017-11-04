@@ -11,6 +11,7 @@ import Brush from './Brush'
 import StatLine from './StatLine'
 import worlddata from './world'
 import shiftdata from './shiftTypes'
+import ShiftUtil from './ShiftUtil'
 import * as d3 from 'd3'
 
 
