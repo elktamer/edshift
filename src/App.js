@@ -71,6 +71,9 @@ class App extends Component {
   render() {
     const filteredAppdata = appdata
     .filter((d,i) => d.launchday >= this.state.brushExtent[0] && d.launchday <= this.state.brushExtent[1])
+
+    var filteredShiftData = shiftdata
+    .filter((d,i) => d.location.name === this.state.site)
     return (
       <div className="App">
       <div className="App-header">
@@ -89,7 +92,7 @@ class App extends Component {
       colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}
       site={this.state.site} />
 
-      <ShiftEditor onChange={this.handleShiftEdit} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
+      <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )

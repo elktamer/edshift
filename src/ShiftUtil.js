@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 function onDay( shift, hour){
 	var daysForShift= shift.description.split(' ');
 	for(var i=0; i < daysForShift.length;i++){
-		if( daysForShift[i] == dayForHour(hour))
+		if( daysForShift[i] === dayForHour(hour))
 		return true;
 	}
 	return false;
@@ -33,7 +33,7 @@ function doctorsPerHour( shiftHours ){
 	for( var hour = 0; hour < 168; hour++){
 		var mdCount = 0;
 		for( var i =0; i < shiftHours.length;i++ ){
-			if( shiftHours[i].time == hour && shiftHours[i].value == 1 && shiftHours[i].minor == minor)
+			if( shiftHours[i].time === hour && shiftHours[i].value === 1 && shiftHours[i].minor === minor)
 				mdCount++;
 		}
 		weekly.push(mdCount);
@@ -43,14 +43,14 @@ function doctorsPerHour( shiftHours ){
 
 class ShiftUtil{
  shift2Data(site, shifts) {
+	 var baseDateFormat = d3.timeParse("%Y-%m-%dT%I:%M:%S.000Z");
 
 			var radialData = [];
 			for (var hour = 0; hour < 168; hour++) {
 				shifts.filter(function(d){
-					return d.location.name == site;
+					return d.location.name === site;
 				})
 				.forEach(function (d) {
-					var baseDateFormat = d3.timeParse("%Y-%m-%dT%I:%M:%S.000Z");
 					var start = baseDateFormat("2016-04-01T12:00:00.000Z").getHours() - 6
 					if (start < 0)
 						start = start + 23;
@@ -66,7 +66,7 @@ class ShiftUtil{
 						  working = 1;
 					  }
 					}
-					radialData.push({ key: d.code, value: working, time: hour, minor: (d.minor==true) });
+					radialData.push({ key: d.code, value: working, time: hour, minor: (d.minor===true) });
 				});
 			}
 			return doctorsPerHour(radialData);
