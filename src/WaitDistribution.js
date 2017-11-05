@@ -1,3 +1,4 @@
+//display the probability distribution and associated info using d3
 class WaitDistribution{
   constructor(props){
     super(props)
