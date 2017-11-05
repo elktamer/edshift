@@ -22,28 +22,19 @@ class ShiftEditor extends Component {
 
   createShiftEditor() {
     const node = this.node
-    d3.select(node)
-      .selectAll("RangeSlider")
-      .data([0])
-      .enter()
-      .append("RangeSlider")
-        .attr("class", "legend")
-
-/*  <RangeSlider
-  step={2}
-  onChange={this.onChange}
-  wrapperClassName={styles.slider}
-  highlightedTrackClassName={styles.sliderHighlightedTrack}
-  trackClassName={styles.sliderTrack}
-  handleClassName={styles.sliderHandle}
-/>
-*/
+  
   }
 
   render() {
 
-      return <svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}>
-      </svg>
+      return  <RangeSlider
+        step={2}
+        onChange={this.onChange}
+        wrapperClassName={styles.slider}
+        highlightedTrackClassName={styles.sliderHighlightedTrack}
+        trackClassName={styles.sliderTrack}
+        handleClassName={styles.sliderHandle}
+      />
   }
 }
 
