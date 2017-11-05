@@ -6,7 +6,7 @@ import WorldMap from './WorldMap'
 import BarChart from './BarChart'
 import WeekChart from './WeekChart'
 
-import StreamGraph from './StreamGraph'
+import ShiftEditor from './ShiftEditor'
 import Brush from './Brush'
 import StatLine from './StatLine'
 import worlddata from './world'
@@ -40,6 +40,7 @@ class App extends Component {
     this.onHover = this.onHover.bind(this)
     this.onBrush = this.onBrush.bind(this)
     this.handleSiteChange = this.handleSiteChange.bind(this)
+    this.handleShiftEdit = this.handleShiftEdit.bind(this)
     this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH" }
   }
 
@@ -57,6 +58,11 @@ class App extends Component {
   handleSiteChange(d){
     this.setState({site:d})
   }
+
+  handleShiftEdit(d){
+    this.setState({})
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.onResize, false)
     this.onResize()
@@ -83,6 +89,7 @@ class App extends Component {
       colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}
       site={this.state.site} />
 
+      <ShiftEditor onChange={this.handleShiftEdit} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )
