@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import './App.css'
-import styles from './styles.css';
 
-import {RangeSlider} from 'rr-slider';
+import  { Range } from 'rc-slider';
+import 'rc-slider/assets/index.css';
+
 
 class ShiftEditor extends Component {
   constructor(props){
@@ -28,19 +29,10 @@ class ShiftEditor extends Component {
           var shifts = this.props.data;
           var seditor = this;
           var sliderList = shifts.map(function(d){
-                          return <RangeSlider
-                            step={2}
-                            onChange={seditor.onChange}
-                            wrapperClassName={styles.slider}
-                            highlightedTrackClassName={styles.sliderHighlightedTrack}
-                            trackClassName={styles.sliderTrack}
-                            handleClassName={styles.sliderHandle}
-                          />;
-                        })
-
+              return  <Range min={0} max={20} defaultValue={[3, 10]} tipFormatter={value => `${value}%`} />;
+          })
           return sliderList
       }
-
 }
 
 export default ShiftEditor
