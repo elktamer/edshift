@@ -46,11 +46,11 @@ class ShiftEditor extends Component {
           var seditor = this;
           var sliderList = shifts.map(function(d, i){
             if( i == 0)
-              return  <Range marks={marks} min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
+              return  <Range  onChange={seditor.onShiftChange.bind(seditor, d.id)}  marks={marks} min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
             if( d.description.includes("Minor") )
               return <Range  style={{background: 'red'}} min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
 
-            return <Range  onChange={seditor.onShiftChange.bind(seditor, i)}  min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
+            return <Range  onChange={seditor.onShiftChange.bind(seditor, d.id)}  min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
 
           })
           return <div style={style}>{sliderList}</div>

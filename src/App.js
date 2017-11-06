@@ -23,7 +23,8 @@ appdata
   d.launchday = i
   d.data = d3.range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
 })
-
+var sUtil = new ShiftUtil();
+var hourData = sUtil.shiftHours( shiftdata)
 const ctasMax = 3;
 
 var historicalData = {};
@@ -39,7 +40,7 @@ class App extends Component {
     this.onBrush = this.onBrush.bind(this)
     this.handleSiteChange = this.handleSiteChange.bind(this)
     this.handleShiftEdit = this.handleShiftEdit.bind(this)
-    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH" }
+    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData }
   }
 
   onResize() {
@@ -57,8 +58,15 @@ class App extends Component {
     this.setState({site:d})
   }
 
-  handleShiftEdit(d, val){
-    this.setState({})
+  handleShiftEdit(id, val){
+    //update shift data
+    hourData.forEach((row,i) => {
+      if( row.id === id){
+        row.start = val[0];
+        row.end=val[1];
+      }
+    })
+    this.setState({ shifts:hourData})
   }
 
   componentDidMount() {
@@ -70,10 +78,9 @@ class App extends Component {
     const filteredAppdata = appdata
     .filter((d,i) => d.launchday >= this.state.brushExtent[0] && d.launchday <= this.state.brushExtent[1])
 
-    var filteredShiftData = shiftdata
+    var filteredShiftData = hourData
     .filter((d,i) => d.location.name === this.state.site)
-    var sUtil = new ShiftUtil();
-    var hourData = sUtil.shiftHours( filteredShiftData)
+
     return (
       <div className="App">
       <div className="App-header">
@@ -92,7 +99,7 @@ class App extends Component {
       colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}
       site={this.state.site} />
 
-      <ShiftEditor onChange={this.handleShiftEdit} data={hourData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
+      <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )
