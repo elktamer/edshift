@@ -37,7 +37,9 @@ class ShiftEditor extends Component {
 
   createShiftEditor() {
     const node = this.node
-
+  }
+  onShiftChange(d, val){
+    this.props.onChange( d, val);
   }
   render() {
           var shifts = this.props.data;
@@ -48,7 +50,7 @@ class ShiftEditor extends Component {
             if( d.description.includes("Minor") )
               return <Range  style={{background: 'red'}} min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
 
-            return <Range  min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
+            return <Range  onChange={seditor.onShiftChange.bind(seditor, i)}  min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
 
           })
           return <div style={style}>{sliderList}</div>

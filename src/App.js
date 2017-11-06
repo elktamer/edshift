@@ -57,7 +57,7 @@ class App extends Component {
     this.setState({site:d})
   }
 
-  handleShiftEdit(d){
+  handleShiftEdit(d, val){
     this.setState({})
   }
 
