@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+var baseDateFormat = d3.timeParse("%Y-%m-%dT%I:%M:%S.000Z");
 
 function onDay( shift, hour){
 	var daysForShift= shift.description.split(' ');
@@ -42,16 +43,13 @@ function doctorsPerHour( shiftHours ){
 }
 
 class ShiftUtil{
- shift2Data(site, shifts) {
-	 var baseDateFormat = d3.timeParse("%Y-%m-%dT%I:%M:%S.000Z");
+ shift2Data( shifts) {
 
 			var radialData = [];
 			for (var hour = 0; hour < 168; hour++) {
-				shifts.filter(function(d){
-					return d.location.name === site;
-				})
+				shifts
 				.forEach(function (d) {
-					var start = baseDateFormat("2016-04-01T12:00:00.000Z").getHours() - 6
+					var start = baseDateFormat(d.startTimeString).getHours() - 6
 					if (start < 0)
 						start = start + 23;
 					var end = baseDateFormat(d.endTimeString).getHours() - 6-1;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
@@ -69,10 +67,28 @@ class ShiftUtil{
 					radialData.push({ key: d.code, value: working, time: hour, minor: (d.minor===true) });
 				});
 			}
-			return doctorsPerHour(radialData);
+			return radialData;
 }
 
-
+shiftHours(shifts){
+	var shiftWithHours = []
+	shifts
+	.forEach(function (d) {
+		var start = baseDateFormat(d.startTimeString).getHours() - 6
+		if (start < 0)
+			start = start + 23;
+		var end = baseDateFormat(d.endTimeString).getHours() - 6-1;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
+		if (end < 0)
+			end = end + 24;
+		if( end < start)
+			end = end+24;
+			
+		d.start = start
+		d.end = end
+		shiftWithHours.push(d)
+	})
+	return shiftWithHours;
+}
 
 
 }

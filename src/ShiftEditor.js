@@ -29,7 +29,7 @@ class ShiftEditor extends Component {
           var shifts = this.props.data;
           var seditor = this;
           var sliderList = shifts.map(function(d){
-              return  <Range min={0} max={20} defaultValue={[3, 10]} tipFormatter={value => `${value}%`} />;
+              return  <Range min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}%`} />;
           })
           return sliderList
       }

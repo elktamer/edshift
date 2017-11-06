@@ -14,7 +14,6 @@ import shiftdata from './shiftTypes'
 import ShiftUtil from './ShiftUtil'
 import * as d3 from 'd3'
 
-
 const appdata = worlddata.features
 .filter(d => d3.geoCentroid(d)[0] < -20)
 
@@ -24,8 +23,7 @@ appdata
   d.launchday = i
   d.data = d3.range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
 })
-var sUtil = new ShiftUtil();
-var shiftCapacity = sUtil.shift2Data("RGH", shiftdata);
+
 const ctasMax = 3;
 
 var historicalData = {};
@@ -74,6 +72,8 @@ class App extends Component {
 
     var filteredShiftData = shiftdata
     .filter((d,i) => d.location.name === this.state.site)
+    var sUtil = new ShiftUtil();
+    var hourData = sUtil.shiftHours( filteredShiftData)
     return (
       <div className="App">
       <div className="App-header">
@@ -92,7 +92,7 @@ class App extends Component {
       colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}
       site={this.state.site} />
 
-      <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
+      <ShiftEditor onChange={this.handleShiftEdit} data={hourData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )
