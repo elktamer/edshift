@@ -76,13 +76,13 @@ shiftHours(shifts){
 	.forEach(function (d) {
 		var start = baseDateFormat(d.startTimeString).getHours() - 6
 		if (start < 0)
-			start = start + 23;
-		var end = baseDateFormat(d.endTimeString).getHours() - 6-1;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
+			start = start + 24;
+		var end = baseDateFormat(d.endTimeString).getHours() - 6;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
 		if (end < 0)
 			end = end + 24;
 		if( end < start)
 			end = end+24;
-			
+
 		d.start = start
 		d.end = end
 		shiftWithHours.push(d)

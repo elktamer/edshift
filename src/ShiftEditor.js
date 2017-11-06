@@ -1,10 +1,24 @@
 import React, { Component } from 'react'
 import './App.css'
-
-import  { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
+import Tooltip from 'rc-tooltip';
+import Slider from 'rc-slider';
 
+const createSliderWithTooltip = Slider.createSliderWithTooltip;
+const Range = createSliderWithTooltip(Slider.Range);
+const Handle = Slider.Handle;
+
+
+const style = { width: 700, margin: 50 };
+const minor = { width: 700, margin: 50, background: 'red' };
+
+const marks = {
+  5: '5am',
+  12: 'noon',
+  24: 'midnight',
+  32: '8am',
+};
 class ShiftEditor extends Component {
   constructor(props){
     super(props)
@@ -28,10 +42,16 @@ class ShiftEditor extends Component {
   render() {
           var shifts = this.props.data;
           var seditor = this;
-          var sliderList = shifts.map(function(d){
-              return  <Range min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}%`} />;
+          var sliderList = shifts.map(function(d, i){
+            if( i == 0)
+              return  <Range marks={marks} min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
+            if( d.description.includes("Minor") )
+              return <Range  style={{background: 'red'}} min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
+
+            return <Range  min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
+
           })
-          return sliderList
+          return <div style={style}>{sliderList}</div>
       }
 }
 
