@@ -74,6 +74,7 @@ shiftHours(shifts){
 	var shiftWithHours = []
 	shifts
 	.forEach(function (d) {
+		d.key = d.id
 		var start = baseDateFormat(d.startTimeString).getHours() - 6
 		var minutes =  baseDateFormat(d.startTimeString).getMinutes()
 		if( minutes == 59) start = start + 1;
