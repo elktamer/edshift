@@ -28,8 +28,6 @@ class WeekChart extends Component {
       return null;
     }
 
-
-    const dataCheck = this.props.data[this.props.site].arrivals;
     const height = this.props.size[1];
     const width = this.props.size[0];
 
@@ -71,25 +69,13 @@ class WeekChart extends Component {
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(daysOfWeek));
 
+//for each data set, get the name, data, and line array
+var allData = this.props.data[this.props.site];
+Object.keys(allData).map(function(key){
+  drawLine(  d3.select(g), key, allData[key], "", x, y, z)
 
-    var serie =d3.select(g)
-    .selectAll("serie")
-    .data([0])
-    .enter()
-    .append("g").selectAll(".serie")
-    .data(dataCheck)
-    .enter().append("g")
-    .attr("class", "serie")
-    .append("path")
-    .attr("class", "line")
-    .style("stroke", function(d, i) { return z(i); })
-    .attr("d", d3.line()
-    .x(function(d, i) {
-      return x(i);
-    })
-    .y(function(d) {
-      return y(d);
-    }));
+});
+
 
   }
 
@@ -99,4 +85,23 @@ class WeekChart extends Component {
   }
 }
 
+function drawLine( g,  name, data, pattern, x, y, z){
+  g.selectAll(name)
+  .data([0])
+  .enter()
+  .append("g").selectAll("."+name)
+  .data(data)
+  .enter().append("g")
+  .attr("class", "name")
+  .append("path")
+  .attr("class", "line")
+  .style("stroke", function(d, i) { return z(i); })
+  .attr("d", d3.line()
+  .x(function(d, i) {
+    return x(i);
+  })
+  .y(function(d) {
+    return y(d);
+  }));
+}
 export default WeekChart
