@@ -89,6 +89,10 @@ class App extends Component {
   render() {
     var filteredShiftData = hourData
     .filter((d,i) => d.location.name === this.state.site)
+		var filteredSimulationData = [0,0,0];
+		if(  typeof historicalData[this.state.site]!== "undefined"
+		&& typeof historicalData[this.state.site].simulation !== "undefined")
+		 filteredSimulationData = historicalData[this.state.site].simulation;
 
     return (
       <div className="App">
@@ -107,7 +111,7 @@ class App extends Component {
       site={this.state.site} />
 
       <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
-			<WaitDistribution data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
+			<WaitDistribution data={filteredSimulationData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )

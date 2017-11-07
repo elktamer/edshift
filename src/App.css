@@ -74,3 +74,12 @@ text {
   fill:white;
   stroke:black;
   opacity:0.8;}
+
+  .bar rect {
+    fill: steelblue;
+  }
+
+  .bar text {
+    fill: #fff;
+    font: 10px sans-serif;
+  }
