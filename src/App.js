@@ -12,6 +12,8 @@ import StatLine from './StatLine'
 import worlddata from './world'
 import shiftdata from './shiftTypes'
 import ShiftUtil from './ShiftUtil'
+import EDSimulation from './EDSimulation'
+
 import * as d3 from 'd3'
 
 const appdata = worlddata.features
@@ -25,14 +27,16 @@ appdata
 })
 var sUtil = new ShiftUtil();
 var hourData = sUtil.shiftHours( shiftdata)
+
+
+var simulation = new EDSimulation();
+
 const ctasMax = 3;
 
 var historicalData = {};
 loadData("arrivals");
 loadData("waiting");
 loadData("lwbs");
-
-
 
 const colorScale = d3.scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
 
@@ -70,7 +74,14 @@ class App extends Component {
         row.end=val[1];
       }
     })
+    var arrivals =historicalData[this.state.site].arrivals;
+    var lwbs = historicalData[this.state.site].lwbs;
+    var shift_data = sUtil.shift2Data(hourData);
+    var doctorSupply = sUtil.doctorsPerHour(shift_data, false);
+    historicalData[this.state.site].simulation = simulation.generate_simulated_queue( doctorSupply, arrivals, lwbs );
+
     this.setState({ shifts:hourData})
+
   }
 
   componentDidMount() {
@@ -84,6 +95,7 @@ class App extends Component {
 
     var filteredShiftData = hourData
     .filter((d,i) => d.location.name === this.state.site)
+
 
     return (
       <div className="App">
