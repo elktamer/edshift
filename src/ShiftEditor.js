@@ -44,7 +44,7 @@ class ShiftEditor extends Component {
   render() {
           var seditor = this;
           var length =  this.props.data.length;
-          var sliderList = this.props.data.map(function(d, i){
+          var sliderList = this.props.data.sort(function(a, b){ return a.start - b.start;}).map(function(d, i){
             if( i == length-1)
               return  <Range key={d.id} onChange={seditor.onShiftChange.bind(seditor, d.id)}  marks={marks} min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
             if( d.description.includes("Minor") )
