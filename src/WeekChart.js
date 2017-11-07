@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import * as d3 from 'd3'
 
-
+var linePattern = {arrivals:"2, 4, 1, 2", waiting:"2,2", lwbs:"1,1", simulation:"4,1" };
 class WeekChart extends Component {
   constructor(props){
     super(props)
@@ -72,11 +72,8 @@ class WeekChart extends Component {
 //for each data set, get the name, data, and line array
 var allData = this.props.data[this.props.site];
 Object.keys(allData).map(function(key){
-  drawLine(  d3.select(g), key, allData[key], "", x, y, z)
-
+  drawLine(  d3.select(g), key, allData[key], linePattern[key], x, y, z)
 });
-
-
   }
 
   render() {
@@ -96,6 +93,7 @@ function drawLine( g,  name, data, pattern, x, y, z){
   .append("path")
   .attr("class", "line")
   .style("stroke", function(d, i) { return z(i); })
+  .style("stroke-dasharray", (pattern))
   .attr("d", d3.line()
   .x(function(d, i) {
     return x(i);
