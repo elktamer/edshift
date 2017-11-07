@@ -1,5 +1,8 @@
+import React, { Component } from 'react'
+import './App.css'
+
 //display the probability distribution and associated info using d3
-class WaitDistribution{
+class WaitDistribution extends Component {
   constructor(props){
     super(props)
     this.createWaitDistribution = this.createWaitDistribution.bind(this)

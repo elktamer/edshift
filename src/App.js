@@ -2,22 +2,16 @@ import React, { Component } from 'react'
 import {RadioGroup, Radio} from 'react-radio-group'
 
 import './App.css'
-import WorldMap from './WorldMap'
-import BarChart from './BarChart'
 import WeekChart from './WeekChart'
 
 import ShiftEditor from './ShiftEditor'
-import Brush from './Brush'
-import StatLine from './StatLine'
-import worlddata from './world'
 import shiftdata from './shiftTypes'
 import ShiftUtil from './ShiftUtil'
 import EDSimulation from './EDSimulation'
+import WaitDistribution from './WaitDistribution'
 
 import * as d3 from 'd3'
 
-const appdata = worlddata.features
-.filter(d => d3.geoCentroid(d)[0] < -20)
 shiftdata.forEach( function(shift){
 		if( shift.description== "mon to fri")
 			shift.description += " Monday Tuesday Wednesday Thursday Friday "
@@ -28,15 +22,9 @@ shiftdata.forEach( function(shift){
 			shift.minor = true;
 		}
 	});
-appdata
-.forEach((d,i) => {
-  const offset = Math.random()
-  d.launchday = i
-  d.data = d3.range(30).map((p,q) => q < i ? 0 : Math.random() * 2 + offset)
-})
+
 var sUtil = new ShiftUtil();
 var hourData = sUtil.shiftHours( shiftdata)
-
 
 var simulation = new EDSimulation();
 
@@ -99,18 +87,12 @@ class App extends Component {
   }
 
   render() {
-    const filteredAppdata = appdata
-    .filter((d,i) => d.launchday >= this.state.brushExtent[0] && d.launchday <= this.state.brushExtent[1])
-
     var filteredShiftData = hourData
     .filter((d,i) => d.location.name === this.state.site)
 
-
     return (
       <div className="App">
-      <div className="App-header">
       <h2>ED Shifts</h2>
-      </div>
       <div>
       <RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
         <Radio value="RGH" />RGH
@@ -121,10 +103,11 @@ class App extends Component {
       </RadioGroup>
 
       <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
-      colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}
+      colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 3]}
       site={this.state.site} />
 
       <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
+			<WaitDistribution data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )
