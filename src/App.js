@@ -29,6 +29,10 @@ const ctasMax = 3;
 
 var historicalData = {};
 loadData("arrivals");
+loadData("waiting");
+loadData("lwbs");
+
+
 
 const colorScale = d3.scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
 
@@ -113,6 +117,8 @@ class App extends Component {
 //selecting location and data types
 //editing the shift times
 function loadData(datatype) {
+  var dayCount =[9,9,8,8,9,9,9]; //count for each day of week in lwbs dataset
+
   d3.text("./"+datatype+".csv", function(textString) {
 
     var input = d3.csvParseRows(textString);
@@ -124,24 +130,29 @@ function loadData(datatype) {
         location = d[0];
         if( typeof historicalData[location] === "undefined"){
           historicalData[location] = {};
+        }
+        if( typeof historicalData[location][datatype] === "undefined"){
           historicalData[location][datatype]=[];
         }
       }
-
+      var modsize = Math.round((d.length-3)/7)
       for( var k =0; k < d.length-1; k++){
         if( d[1] === "Total") continue;
         if (k > 0){
           d[k] = +d[k];
         }
         if( k > 1 ){
-          var ctasNumber = (k - 2) % 6;
+          var ctasNumber = (k - 2) % modsize;
           if( typeof historicalData[location][datatype][ctasNumber] === "undefined"){
             historicalData[location][datatype][ctasNumber]=[];
           }
           if( ctasNumber < ctasMax &&  ctasNumber > 0){
-            var dayOfWeek = Math.floor((k-2) / 6 );
+            var dayOfWeek = Math.floor((k-2) / modsize );
             var hour = d[1] + dayOfWeek*24
             historicalData[location][datatype][ctasNumber][hour]=d[k];
+            if( datatype ==="lwbs" ){
+              historicalData[location][datatype][ctasNumber][hour]/=dayCount[dayOfWeek];
+            }
           }
         }
       }

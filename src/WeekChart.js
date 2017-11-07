@@ -37,7 +37,7 @@ class WeekChart extends Component {
 
     var  y = d3.scaleLinear()
     .domain([0, 25])
-    .range([0,height]);
+    .range([height,0]);
 
     var x = d3.scaleLinear()
     .domain([0, 168])
@@ -53,7 +53,7 @@ class WeekChart extends Component {
 
 
     d3.select(g)
-    .selectAll("g.axisy")
+    .selectAll("g.axisx")
     .data([0])
     .enter()
     .append("g")
