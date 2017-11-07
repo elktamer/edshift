@@ -18,7 +18,16 @@ import * as d3 from 'd3'
 
 const appdata = worlddata.features
 .filter(d => d3.geoCentroid(d)[0] < -20)
+shiftdata.forEach( function(shift){
+		if( shift.description== "mon to fri")
+			shift.description += " Monday Tuesday Wednesday Thursday Friday "
+		else
+			shift.description += " Sunday Monday Tuesday Wednesday Thursday Friday Saturday"
 
+		if( shift.description.toLowerCase().includes("minor")){
+			shift.minor = true;
+		}
+	});
 appdata
 .forEach((d,i) => {
   const offset = Math.random()
@@ -78,7 +87,7 @@ class App extends Component {
     var lwbs = historicalData[this.state.site].lwbs;
     var shift_data = sUtil.shift2Data(hourData);
     var doctorSupply = sUtil.doctorsPerHour(shift_data, false);
-    historicalData[this.state.site].simulation = simulation.generate_simulated_queue( doctorSupply, arrivals, lwbs );
+    historicalData[this.state.site].simulation = simulationAverages(simulation.generate_simulated_queue( doctorSupply, arrivals, lwbs ));
 
     this.setState({ shifts:hourData})
 
@@ -120,6 +129,26 @@ class App extends Component {
       </div>
     )
   }
+}
+var sim_size =1000;
+function simulationAverages( simulations){
+	var averages = [];
+	averages.push([]);
+	for( var ctasIndex = 1; ctasIndex < ctasMax;ctasIndex++){
+	  var avg_queue =[];
+
+	  for( var hour =0; hour < 7*24; hour++){
+		var total = 0;
+		for( var n =0; n < sim_size; n++){
+			total += simulations[ctasIndex][n][hour];
+		}
+		var avg = total/sim_size;
+		avg_queue.push( avg);
+	  }
+
+	 averages.push( avg_queue );
+	}
+	return averages;//simulations;
 }
 //todo
 //start with one location, one data type
