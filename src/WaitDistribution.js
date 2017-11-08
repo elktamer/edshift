@@ -30,22 +30,18 @@ class WaitDistribution extends Component {
     .domain([0, 20])
     .rangeRound([0, width]);
 
-    var data = d3.range(168).map(d3.randomBates(10));
-
 var realdata = this.props.data[2];
-if( realdata.length == 1) return;
-    var bins = d3.histogram()
-    .domain(x.domain())
-    .thresholds(x.ticks(20))(data);
+if( realdata.length !== 168) return;
 
     var rbins = d3.histogram()
     .domain(x.domain())
     .thresholds(x.ticks(20))(realdata);
 
     var y = d3.scaleLinear()
-    .domain([0, d3.max(bins, function(d) { return d.length; })])
+    .domain([0, d3.max(rbins, function(d) { return d.length; })])
     .range([height, 0]);
-
+    d3.select(node)
+      .selectAll(".bar").remove();
     var bar = d3.select(node)
       .selectAll(".bar")
     .data(rbins)
@@ -57,7 +53,7 @@ if( realdata.length == 1) return;
 
     bar.append("rect")
     .attr("x", 1)
-    .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+    .attr("width", x(rbins[0].x1) - x(rbins[0].x0) - 1)
     .attr("height", function(d) {
       return height - y(d.length);
      });
@@ -65,7 +61,7 @@ if( realdata.length == 1) return;
     bar.append("text")
     .attr("dy", ".75em")
     .attr("y", 6)
-    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
+    .attr("x", (x(rbins[0].x1) - x(rbins[0].x0)) / 2)
     .attr("text-anchor", "middle")
     .text(function(d) { return formatCount(d.length); });
 
