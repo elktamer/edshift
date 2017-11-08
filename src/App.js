@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {RadioGroup, Radio} from 'react-radio-group'
+import { Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 
 import './App.css'
 import WeekChart from './WeekChart'
@@ -46,7 +47,7 @@ class App extends Component {
     this.onBrush = this.onBrush.bind(this)
     this.handleSiteChange = this.handleSiteChange.bind(this)
     this.handleShiftEdit = this.handleShiftEdit.bind(this)
-    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2 }
+    this.state = { screenWidth: 1400, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2 }
   }
 
   onResize() {
@@ -111,10 +112,15 @@ class App extends Component {
       <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
       colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 3]}
       site={this.state.site} />
-
-      <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
-			<WaitDistribution data={simulated} ctas={this.state.ctas} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
-      </div>
+			<Row>
+			<Col  xs="6">
+      <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			</Col>
+			<Col  xs="6">
+			<WaitDistribution data={simulated} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			</Col>
+			</Row>
+	    </div>
       </div>
     )
   }

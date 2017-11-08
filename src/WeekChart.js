@@ -33,15 +33,15 @@ class WeekChart extends Component {
 
     var daysOfWeek = d3.scaleBand()
     .domain(["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday"])
-    .range([0, this.props.size[1]]);
+    .range([0, this.props.size[0]]);
 
     var  y = d3.scaleLinear()
     .domain([0, 25])
-    .range([height,0]);
+    .range([height-30,30]);
 
     var x = d3.scaleLinear()
     .domain([0, 168])
-    .range([0, width]);
+    .range([30, width-30]);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -53,20 +53,22 @@ class WeekChart extends Component {
 
 
     d3.select(g)
-    .selectAll("g.axisx")
-    .data([0])
-    .enter()
-    .append("g")
-    .attr("class",  "axis axis--x")
-    .call(d3.axisLeft(y));
-
-    d3.select(g)
     .selectAll("g.axisy")
     .data([0])
     .enter()
+    .append("g")
+    .attr("class",  "axis axis--y")
+    .attr("transform", "translate(30," +0 + ")")
+
+    .call(d3.axisLeft(y));
+
+    d3.select(g)
+    .selectAll("g.axisx")
+    .data([0])
+    .enter()
     .append("g").append("g")
-    .attr("class", "axis axis--y")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0," + (height-30) + ")")
     .call(d3.axisBottom(daysOfWeek));
 
 //for each data set, get the name, data, and line array

@@ -10,8 +10,8 @@ const Range = createSliderWithTooltip(Slider.Range);
 const Handle = Slider.Handle;
 
 
-const style = { width: 700, margin: 50 };
-const minor = { width: 700, margin: 50, background: 'red' };
+const style = {  margin: 50 };
+const minor = {  margin: 50, background: 'red' };
 
 const marks = {
   5: '5am',

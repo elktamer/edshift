@@ -72,7 +72,7 @@ if( realdata.length < 168) return;
     .attr("text-anchor", "middle")
     .text(function(d) {
       var percentage = d.length*100.0/combineddata.length
-       return formatCount(percentage)+" %";
+       return formatCount(percentage)+"%";
      });
 
     d3.select(node).append("g")
