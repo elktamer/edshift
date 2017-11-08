@@ -31,6 +31,7 @@ var simulation = new EDSimulation();
 const ctasMax = 3;
 
 var historicalData = {};
+var simulated = [[0],[0],[0]];
 loadData("arrivals");
 loadData("waiting");
 loadData("lwbs");
@@ -75,7 +76,8 @@ class App extends Component {
     var lwbs = historicalData[this.state.site].lwbs;
     var shift_data = sUtil.shift2Data(hourData);
     var doctorSupply = sUtil.doctorsPerHour(shift_data, false);
-    historicalData[this.state.site].simulation = simulationAverages(simulation.generate_simulated_queue( doctorSupply, arrivals, lwbs ));
+		 simulated = simulation.generate_simulated_queue( doctorSupply, arrivals, lwbs );
+    historicalData[this.state.site].simulation = simulationAverages(simulated);
 
     this.setState({ shifts:hourData})
 
@@ -111,7 +113,7 @@ class App extends Component {
       site={this.state.site} />
 
       <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
-			<WaitDistribution data={filteredSimulationData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
+			<WaitDistribution data={simulated} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )

@@ -27,19 +27,26 @@ class WaitDistribution extends Component {
     const height = this.props.size[1]
 
     var x = d3.scaleLinear()
-    .domain([0, 20])
+    .domain([0, 40])
     .rangeRound([0, width]);
 
 var realdata = this.props.data[2];
-if( realdata.length !== 168) return;
+if( realdata.length < 168) return;
+    var combineddata = [];
+    realdata.forEach( function(d){
+      d.forEach(function(r){
+        combineddata.push(r)
+      })
+    })
 
     var rbins = d3.histogram()
     .domain(x.domain())
-    .thresholds(x.ticks(20))(realdata);
+    .thresholds(x.ticks(20))(combineddata);
 
     var y = d3.scaleLinear()
     .domain([0, d3.max(rbins, function(d) { return d.length; })])
     .range([height, 0]);
+
     d3.select(node)
       .selectAll(".bar").remove();
     var bar = d3.select(node)
@@ -67,7 +74,7 @@ if( realdata.length !== 168) return;
 
     d3.select(node).append("g")
     .attr("class", "axis axis--x")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", "translate(0," +( height-30) + ")")
     .call(d3.axisBottom(x));
 
   }
