@@ -53,7 +53,7 @@ class ShiftEditor extends Component {
             return <Range key={d.id} onChange={seditor.onShiftChange.bind(seditor, d.id)}  min={5} max={32} defaultValue={[d.start, d.end]} tipFormatter={value => `${value}:00`} />;
 
           })
-          return <div style={style}>{sliderList}</div>
+          return <div><h2>Shift Schedule</h2> <div style={style}>{sliderList}</div></div>
       }
 }
 

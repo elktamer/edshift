@@ -36,12 +36,12 @@ class WeekChart extends Component {
     .range([0, this.props.size[0]]);
 
     var  y = d3.scaleLinear()
-    .domain([0, 25])
+    .domain([0,14])
     .range([height-30,30]);
 
     var x = d3.scaleLinear()
     .domain([0, 168])
-    .range([30, width-30]);
+    .range([30, width]);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -68,7 +68,7 @@ class WeekChart extends Component {
     .enter()
     .append("g").append("g")
     .attr("class", "axis axis--x")
-    .attr("transform", "translate(0," + (height-30) + ")")
+    .attr("transform", "translate(30," + (height-30) + ")")
     .call(d3.axisBottom(daysOfWeek));
 
 //for each data set, get the name, data, and line array
