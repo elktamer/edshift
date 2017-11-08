@@ -27,10 +27,10 @@ class WaitDistribution extends Component {
     const height = this.props.size[1]
 
     var x = d3.scaleLinear()
-    .domain([0, 40])
+    .domain([0, 25])
     .rangeRound([0, width]);
 
-var realdata = this.props.data[2];
+var realdata = this.props.data[this.props.ctas];
 if( realdata.length < 168) return;
     var combineddata = [];
     realdata.forEach( function(d){
@@ -45,7 +45,7 @@ if( realdata.length < 168) return;
 
     var y = d3.scaleLinear()
     .domain([0, d3.max(rbins, function(d) { return d.length; })])
-    .range([height, 0]);
+    .range([height, 50]);
 
     d3.select(node)
       .selectAll(".bar").remove();
@@ -55,7 +55,7 @@ if( realdata.length < 168) return;
     .enter().append("g")
     .attr("class", "bar")
     .attr("transform", function(d) {
-      return "translate(" + x(d.x0) + "," + y(d.length) + ")";
+      return "translate(" + x(d.x0) + "," + (y(d.length) -30)+ ")";
      });
 
     bar.append("rect")
@@ -67,10 +67,13 @@ if( realdata.length < 168) return;
 
     bar.append("text")
     .attr("dy", ".75em")
-    .attr("y", 6)
+    .attr("y", -10)
     .attr("x", (x(rbins[0].x1) - x(rbins[0].x0)) / 2)
     .attr("text-anchor", "middle")
-    .text(function(d) { return formatCount(d.length); });
+    .text(function(d) {
+      var percentage = d.length*100.0/combineddata.length
+       return formatCount(percentage)+" %";
+     });
 
     d3.select(node).append("g")
     .attr("class", "axis axis--x")

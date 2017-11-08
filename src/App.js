@@ -46,7 +46,7 @@ class App extends Component {
     this.onBrush = this.onBrush.bind(this)
     this.handleSiteChange = this.handleSiteChange.bind(this)
     this.handleShiftEdit = this.handleShiftEdit.bind(this)
-    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData }
+    this.state = { screenWidth: 800, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2 }
   }
 
   onResize() {
@@ -113,7 +113,7 @@ class App extends Component {
       site={this.state.site} />
 
       <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
-			<WaitDistribution data={simulated} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
+			<WaitDistribution data={simulated} ctas={this.state.ctas} size={[4*this.state.screenWidth/5, this.state.screenHeight / 2]}/>
       </div>
       </div>
     )
