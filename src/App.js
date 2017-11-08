@@ -13,7 +13,7 @@ import WaitDistribution from './WaitDistribution'
 import * as d3 from 'd3'
 
 shiftdata.forEach( function(shift){
-		if( shift.description== "mon to fri")
+		if( shift.description=== "mon to fri")
 			shift.description += " Monday Tuesday Wednesday Thursday Friday "
 		else
 			shift.description += " Sunday Monday Tuesday Wednesday Thursday Friday Saturday"
@@ -89,7 +89,7 @@ class App extends Component {
   render() {
     var filteredShiftData = hourData
     .filter((d,i) => d.location.name === this.state.site)
-		var filteredSimulationData = [0,0,0];
+		var filteredSimulationData = [[0],[0],[0]];
 		if(  typeof historicalData[this.state.site]!== "undefined"
 		&& typeof historicalData[this.state.site].simulation !== "undefined")
 		 filteredSimulationData = historicalData[this.state.site].simulation;

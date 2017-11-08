@@ -63,7 +63,7 @@ shiftHours(shifts){
 		d.key = d.id
 		var start = baseDateFormat(d.startTimeString).getHours() - 6
 		var minutes =  baseDateFormat(d.startTimeString).getMinutes()
-		if( minutes == 59) start = start + 1;
+		if( minutes === 59) start = start + 1;
 		if (start < 0)
 			start = start + 24;
 		var end = baseDateFormat(d.endTimeString).getHours() - 6;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work

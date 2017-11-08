@@ -20,7 +20,6 @@ var sim_size = 1000;
 function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs ){
   var queue =[];
   var waiting = 0;
-  var lwbsQ = 0;
   //		console.log( "simulation");
 
   //var lwbsAVG = calcLWBSAverages();
