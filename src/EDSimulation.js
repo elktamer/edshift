@@ -17,7 +17,7 @@ class EDSimulation{
 
   }
 }
-var sim_size = 1000;
+var sim_size = 1;
 
 function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs, startWait ){
   var queue =[];

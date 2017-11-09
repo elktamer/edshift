@@ -78,6 +78,7 @@ class App extends Component {
     var lwbs = historicalData[this.state.site].lwbs;
     var shift_data = sUtil.shift2Data(hourData);
     var doctorSupply = sUtil.doctorsPerHour(shift_data, false);
+		  historicalData[this.state.site].supply = [doctorSupply];
 		 simulated = simulation.generate_simulated_queue( doctorSupply, arrivals, lwbs );
     historicalData[this.state.site].simulation = simulationAverages(simulated);
 
@@ -122,7 +123,7 @@ class App extends Component {
     )
   }
 }
-var sim_size =1000;
+var sim_size =1;
 function simulationAverages( simulations){
 	var averages = [];
 	averages.push([]);
