@@ -29,8 +29,9 @@ function dayForHour(hour){
 }
 
 class ShiftUtil{
+//how do I check for the hours worked during the hours past midnight?
+//maybe loop through the shifts and days and then the hours?	
  shift2Data( shifts) {
-
 			var radialData = [];
 			for (var hour = 0; hour < 168; hour++) {
 				shifts
@@ -60,6 +61,8 @@ shiftHours(shifts){
 		if (start < 0)
 			start = start + 23;
 		var end = baseDateFormat(d.endTimeString).getHours() - 6-1;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
+		minutes =  baseDateFormat(d.endTimeString).getMinutes()
+		if( minutes === 59) end  = end + 1;
 		if (end < 0)
 			end = end + 24;
 
