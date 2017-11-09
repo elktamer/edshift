@@ -4,8 +4,8 @@ var baseDateFormat = d3.timeParse("%Y-%m-%dT%I:%M:%S.000Z");
 function onDay( shift, hour){
 	var daysForShift= shift.description.split(' ');
 	for(var i=0; i < daysForShift.length;i++){
-		if( daysForShift[i] === dayForHour(hour))
-		return true;
+		if( daysForShift[i] === dayForHour(hour))//times until 6 am will be covered by the previous day?
+			return true;
 	}
 	return false;
 }
@@ -27,6 +27,24 @@ function dayForHour(hour){
 	return "Saturday";
 
 }
+//convert shift time to hour of week instead of vice versa
+function isWorking(hourOfWeek, shift){
+/*	var day_hour = hourOfWeek % 24;
+	if( onDay( shift, hourOfWeek) ){
+		if ((day_hour > shift.start && day_hour <= shift.end) ||
+		(shift.end < shift.start && ((day_hour > shift.start && day_hour >= shift.end) || (day_hour < shift.start && day_hour <= shift.end)))) {
+			return true;
+		}
+	}
+*/
+	var hourOfDay = hourOfWeek % 24;
+	//what about the case where the shift has started on the previous day?
+	if( onDay( shift, hourOfWeek) && (shift.start < hourOfDay && shift.end > hourOfDay)){
+		return 1;
+	}
+
+	return 0;
+}
 
 class ShiftUtil{
 //how do I check for the hours worked during the hours past midnight?
@@ -34,17 +52,9 @@ class ShiftUtil{
  shift2Data( shifts) {
 			var radialData = [];
 			for (var hour = 0; hour < 168; hour++) {
-				shifts
-				.forEach(function (d) {
-					var working = 0;
-					var day_hour = hour % 24;
-					if( onDay( d, hour) ){
-					  if ((day_hour > d.start && day_hour <= d.end) ||
-						(d.end < d.start && ((day_hour > d.start && day_hour >= d.end) || (day_hour < d.start && day_hour <= d.end)))) {
-						  working = 1;
-					  }
-					}
-					radialData.push({ key: d.code, value: working, time: hour, minor: (d.minor===true) });
+				shifts.forEach(function (shift) {
+					var working = isWorking(hour, shift)
+					radialData.push({ key: shift.code, value: working, time: hour, minor: (shift.minor===true) });
 				});
 			}
 			return radialData;
@@ -85,6 +95,9 @@ doctorsPerHour( shiftHours ){
 		for( var i =0; i < shiftHours.length;i++ ){
 			if( shiftHours[i].time === hour && shiftHours[i].value === 1 && shiftHours[i].minor === minor)
 				mdCount++;
+		}
+		if(mdCount === 0){
+			console.log( "MD Count should never be zero "+ hour);
 		}
 		weekly.push(mdCount);
 	}

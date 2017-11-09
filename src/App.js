@@ -22,7 +22,7 @@ shiftdata.forEach( function(shift){
 		if( shift.description.toLowerCase().includes("minor")){
 			shift.minor = true;
 		}
-		
+
 	});
 
 var sUtil = new ShiftUtil();
@@ -93,10 +93,6 @@ class App extends Component {
   render() {
     var filteredShiftData = hourData
     .filter((d,i) => d.location.name === this.state.site)
-		var filteredSimulationData = [[0],[0],[0]];
-		if(  typeof historicalData[this.state.site]!== "undefined"
-		&& typeof historicalData[this.state.site].simulation !== "undefined")
-		 filteredSimulationData = historicalData[this.state.site].simulation;
 
     return (
       <div className="App">
