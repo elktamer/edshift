@@ -35,18 +35,11 @@ class ShiftUtil{
 			for (var hour = 0; hour < 168; hour++) {
 				shifts
 				.forEach(function (d) {
-					var start = baseDateFormat(d.startTimeString).getHours() - 6
-					if (start < 0)
-						start = start + 23;
-					var end = baseDateFormat(d.endTimeString).getHours() - 6-1;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
-					if (end < 0)
-						end = end + 24;
-
 					var working = 0;
 					var day_hour = hour % 24;
 					if( onDay( d, hour) ){
-					  if ((day_hour > start && day_hour <= end) ||
-						(end < start && ((day_hour > start && day_hour >= end) || (day_hour < start && day_hour <= end)))) {
+					  if ((day_hour > d.start && day_hour <= d.end) ||
+						(d.end < d.start && ((day_hour > d.start && day_hour >= d.end) || (day_hour < d.start && day_hour <= d.end)))) {
 						  working = 1;
 					  }
 					}
@@ -65,12 +58,10 @@ shiftHours(shifts){
 		var minutes =  baseDateFormat(d.startTimeString).getMinutes()
 		if( minutes === 59) start = start + 1;
 		if (start < 0)
-			start = start + 24;
-		var end = baseDateFormat(d.endTimeString).getHours() - 6;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
+			start = start + 23;
+		var end = baseDateFormat(d.endTimeString).getHours() - 6-1;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
 		if (end < 0)
 			end = end + 24;
-		if( end < start)
-			end = end+24;
 
 		d.start = start
 		d.end = end

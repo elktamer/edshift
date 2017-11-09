@@ -5,8 +5,10 @@ class EDSimulation{
     simulations.push([]);//skip the CTAS 1 values
     for( var ctasIndex = 1; ctasIndex < 5; ctasIndex++){
       var ctasSim = [];
+      var lastwait = 0;
       for( var n =0; n < sim_size; n++){
-        var weekSim = simulatedWeek( doctorSupply, ctasIndex, arrivals, lwbs);
+        var weekSim = simulatedWeek( doctorSupply, ctasIndex, arrivals, lwbs, lastwait);
+        lastwait = weekSim[weekSim.length-1]
         ctasSim.push(weekSim);
       }
       simulations.push(ctasSim);
@@ -17,9 +19,9 @@ class EDSimulation{
 }
 var sim_size = 1000;
 
-function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs ){
+function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs, startWait ){
   var queue =[];
-  var waiting = 0;
+  var waiting = startWait;
   //		console.log( "simulation");
 
   //var lwbsAVG = calcLWBSAverages();

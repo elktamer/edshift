@@ -22,6 +22,7 @@ shiftdata.forEach( function(shift){
 		if( shift.description.toLowerCase().includes("minor")){
 			shift.minor = true;
 		}
+		
 	});
 
 var sUtil = new ShiftUtil();
