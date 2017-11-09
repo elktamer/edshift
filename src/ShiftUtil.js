@@ -29,17 +29,8 @@ function dayForHour(hour){
 }
 //convert shift time to hour of week instead of vice versa
 function isWorking(hourOfWeek, shift){
-/*	var day_hour = hourOfWeek % 24;
-	if( onDay( shift, hourOfWeek) ){
-		if ((day_hour > shift.start && day_hour <= shift.end) ||
-		(shift.end < shift.start && ((day_hour > shift.start && day_hour >= shift.end) || (day_hour < shift.start && day_hour <= shift.end)))) {
-			return true;
-		}
-	}
-*/
-	var hourOfDay = hourOfWeek % 24;
-	//what about the case where the shift has started on the previous day?
-	if( onDay( shift, hourOfWeek) && (shift.start < hourOfDay && shift.end > hourOfDay)){
+	var hourOfDay = hourOfWeek % 24 + 6; //shift go 6 hours into the next day
+	if( onDay( shift, hourOfWeek) && (shift.start <= hourOfDay && shift.end >= hourOfDay)){
 		return 1;
 	}
 
