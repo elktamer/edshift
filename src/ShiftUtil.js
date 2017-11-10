@@ -59,7 +59,6 @@ shift2WeekCoverage( shifts){
 			    daysOfWeek.push(new Date(d));
 			}
 				daysOfWeek.forEach( function(day){
-					console.log( day )
 					shifts.forEach(function (shift) {
 					var shiftAssignment  = clone(shift)
 					shiftAssignment.startDate = new Date(shift.startDate)

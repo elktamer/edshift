@@ -31,7 +31,7 @@ class WaitDistribution extends Component {
     .rangeRound([0, width]);
 
 var realdata = this.props.data[this.props.ctas];
-if( realdata.length < 168) return;
+if( realdata.length < 168) return;//won't work for a single run simulation
     var combineddata = [];
     realdata.forEach( function(d){
       d.forEach(function(r){
