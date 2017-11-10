@@ -62,6 +62,8 @@ shift2WeekCoverage( shifts){
 					console.log( day )
 					shifts.forEach(function (shift) {
 					var shiftAssignment  = clone(shift)
+					shiftAssignment.startDate = new Date(shift.startDate)
+					shiftAssignment.endDate = new Date(shift.endDate)
 
 					shiftAssignment.startDate.setFullYear( day.getFullYear() );
 					shiftAssignment.startDate.setMonth( day.getMonth() );
@@ -80,7 +82,9 @@ shiftHours(shifts){
 	.forEach(function (d) {
 		d.key = d.id
 		d.startDate =  baseDateFormat(d.startTimeString);
+		d.startDate.setHours( d.startDate.getHours() - 6);
 		d.endDate = baseDateFormat(d.endTimeString);
+		d.endDate.setHours( d.endDate.getHours() - 6)
 
 		var start = baseDateFormat(d.startTimeString).getHours() - 6
 		var minutes =  baseDateFormat(d.startTimeString).getMinutes()
@@ -117,6 +121,30 @@ doctorsPerHour( shiftHours ){
 			console.log( "MD Count should never be zero "+ hour);
 		}
 		weekly.push(mdCount);
+	}
+	return weekly;
+}
+
+testDoctorsPerHour( coverage ){
+	var weekly = [];
+	var minor = false;
+	var timeOfWeek = new Date(2017, 10, 5)
+	for (var d = 0; d <168; d++){
+		timeOfWeek.setHours(timeOfWeek.getHours() + 1);
+		var mdCount = 0;
+		coverage.forEach( function(shiftAssignment){
+			var endShift = new Date( shiftAssignment.startDate);
+			endShift.setHours(endShift.getHours() + 7);
+
+			if( shiftAssignment.startDate <= timeOfWeek )
+			if(endShift >= timeOfWeek ){
+				mdCount++;
+			}
+		})
+		if(mdCount === 0){
+			console.log( "MD Count should never be zero "+ d);
+		}
+			weekly.push(mdCount);
 	}
 	return weekly;
 }

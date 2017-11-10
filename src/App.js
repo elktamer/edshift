@@ -76,12 +76,12 @@ class App extends Component {
     })
     var arrivals =historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
-    var shift_data = sUtil.shift2Data(hourData);
-		var test = sUtil.shift2WeekCoverage(hourData);
-		
-    var doctorSupply = sUtil.doctorsPerHour(shift_data, false);
-		  historicalData[this.state.site].supply = [doctorSupply];
-		 simulated = simulation.generate_simulated_queue( doctorSupply, arrivals, lwbs );
+//    var shift_data = sUtil.shift2Data(hourData);
+		var test = sUtil.shift2WeekCoverage(hourData) .filter((d,i) => d.location.name === this.state.site);
+		var testSupply = sUtil.testDoctorsPerHour( test )
+  //  var doctorSupply = sUtil.doctorsPerHour(shift_data, false);
+		  historicalData[this.state.site].supply = [testSupply];
+		 simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs );
     historicalData[this.state.site].simulation = simulationAverages(simulated);
 
     this.setState({ shifts:hourData})
