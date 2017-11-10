@@ -51,11 +51,37 @@ class ShiftUtil{
 			return radialData;
 }
 
+shift2WeekCoverage( shifts){
+		  var shiftCoverage = [];
+			var endOfWeek = new Date(2017, 10, 11)
+			var daysOfWeek = [];
+			for (var d = new Date(2017, 10, 4); d <= endOfWeek; d.setDate(d.getDate() + 1)) {
+			    daysOfWeek.push(new Date(d));
+			}
+				daysOfWeek.forEach( function(day){
+					console.log( day )
+					shifts.forEach(function (shift) {
+					var shiftAssignment  = clone(shift)
+
+					shiftAssignment.startDate.setFullYear( day.getFullYear() );
+					shiftAssignment.startDate.setMonth( day.getMonth() );
+
+					shiftAssignment.startDate.setDate( day.getDate() );
+
+					shiftCoverage.push(shiftAssignment);
+				})
+			})
+			return shiftCoverage;
+}
+
 shiftHours(shifts){
 	var shiftWithHours = []
 	shifts
 	.forEach(function (d) {
 		d.key = d.id
+		d.startDate =  baseDateFormat(d.startTimeString);
+		d.endDate = baseDateFormat(d.endTimeString);
+
 		var start = baseDateFormat(d.startTimeString).getHours() - 6
 		var minutes =  baseDateFormat(d.startTimeString).getMinutes()
 		if (start < 0)
@@ -96,4 +122,23 @@ doctorsPerHour( shiftHours ){
 }
 
 }
+function clone(obj) {
+      if (obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
+        return obj;
+
+      if (obj instanceof Date)
+        var temp = new obj.constructor(); //or new Date(obj);
+      else
+        var temp = obj.constructor();
+
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          obj['isActiveClone'] = null;
+          temp[key] = clone(obj[key]);
+          delete obj['isActiveClone'];
+        }
+      }
+
+      return temp;
+    }
 export default ShiftUtil
