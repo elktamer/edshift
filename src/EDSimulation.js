@@ -1,4 +1,7 @@
+var sim_size = 1000;
+
 class EDSimulation{
+
    generate_simulated_queue(doctorSupply, arrivals, lwbs){
 
     var simulations = [];
@@ -16,8 +19,27 @@ class EDSimulation{
     return simulations;
 
   }
+
+  simulationAverages( simulations){
+  	var averages = [];
+  	averages.push([]);
+  	for( var ctasIndex = 1; ctasIndex < 3;ctasIndex++){
+  	  var avg_queue =[];
+
+  	  for( var hour =0; hour < 7*24; hour++){
+  		var total = 0;
+  		for( var n =0; n < sim_size; n++){
+  			total += simulations[ctasIndex][n][hour];
+  		}
+  		var avg = total/sim_size;
+  		avg_queue.push( avg);
+  	  }
+
+  	 averages.push( avg_queue );
+  	}
+  	return averages;//simulations;
+  }
 }
-var sim_size = 1;
 
 function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs, startWait ){
   var queue =[];

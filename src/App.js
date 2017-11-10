@@ -76,16 +76,13 @@ class App extends Component {
     })
     var arrivals =historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
-//    var shift_data = sUtil.shift2Data(hourData);
 		var test = sUtil.shift2WeekCoverage(hourData) .filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
-  //  var doctorSupply = sUtil.doctorsPerHour(shift_data, false);
-		  historicalData[this.state.site].supply = [testSupply];
-		 simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs );
-    historicalData[this.state.site].simulation = simulationAverages(simulated);
+		historicalData[this.state.site].supply = [testSupply];
+		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs );
+    historicalData[this.state.site].simulation = simulation.simulationAverages(simulated);
 
     this.setState({ shifts:hourData})
-
   }
 
   componentDidMount() {
@@ -118,7 +115,6 @@ class App extends Component {
 			<label> <Checkbox name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
 			<label> <Checkbox name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
 			<label> <Checkbox name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
-
 			<label> <Checkbox name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
 
 
@@ -136,26 +132,7 @@ class App extends Component {
     )
   }
 }
-var sim_size =1;
-function simulationAverages( simulations){
-	var averages = [];
-	averages.push([]);
-	for( var ctasIndex = 1; ctasIndex < ctasMax;ctasIndex++){
-	  var avg_queue =[];
 
-	  for( var hour =0; hour < 7*24; hour++){
-		var total = 0;
-		for( var n =0; n < sim_size; n++){
-			total += simulations[ctasIndex][n][hour];
-		}
-		var avg = total/sim_size;
-		avg_queue.push( avg);
-	  }
-
-	 averages.push( avg_queue );
-	}
-	return averages;//simulations;
-}
 //todo
 //start with one location, one data type
 //list of constants for data types, array of data types
