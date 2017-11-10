@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {RadioGroup, Radio} from 'react-radio-group'
-import { Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
-
+import Checkbox from 'rc-checkbox'
 import './App.css'
 import WeekChart from './WeekChart'
 
@@ -48,6 +47,7 @@ class App extends Component {
     this.onBrush = this.onBrush.bind(this)
     this.handleSiteChange = this.handleSiteChange.bind(this)
     this.handleShiftEdit = this.handleShiftEdit.bind(this)
+		this.onChangeDataSet = this.onChangeDataSet.bind(this)
     this.state = { screenWidth: 1400, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2 }
   }
 
@@ -93,6 +93,12 @@ class App extends Component {
     this.onResize()
   }
 
+	onChangeDataSet(e) {
+		historicalData[this.state.site][e.target.name].show=e.target.checked;
+		this.setState({ site:this.state.site})
+
+	}
+
   render() {
     var filteredShiftData = hourData
     .filter((d,i) => d.location.name === this.state.site)
@@ -108,18 +114,23 @@ class App extends Component {
         <Radio value="SHC" />SHC
         <Radio value="ACH" />ACH
       </RadioGroup>
+			<label> <Checkbox name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
+			<label> <Checkbox name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
+			<label> <Checkbox name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
+			<label> <Checkbox name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
 
-      <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
+			<label> <Checkbox name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+
+
+
+		  <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
       colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 3]}
       site={this.state.site} />
-			<Row>
-			<Col  xs="6">
+
       <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
-			</Col>
-			<Col  xs="6">
+
 			<WaitDistribution data={simulated} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
-			</Col>
-			</Row>
+
 	    </div>
       </div>
     )
@@ -169,6 +180,7 @@ function loadData(datatype) {
         }
         if( typeof historicalData[location][datatype] === "undefined"){
           historicalData[location][datatype]=[];
+					historicalData[location][datatype].show=true;
         }
       }
       var modsize = Math.round((d.length-3)/7)
@@ -186,6 +198,7 @@ function loadData(datatype) {
             var dayOfWeek = Math.floor((k-2) / modsize );
             var hour = d[1] + dayOfWeek*24
             historicalData[location][datatype][ctasNumber][hour]=d[k];
+
             if( datatype ==="lwbs" ){
               historicalData[location][datatype][ctasNumber][hour]/=dayCount[dayOfWeek];
             }

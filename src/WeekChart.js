@@ -74,7 +74,8 @@ class WeekChart extends Component {
 //for each data set, get the name, data, and line array
 var allData = this.props.data[this.props.site];
 Object.keys(allData).map(function(key){
-  drawLine(  d3.select(g), key, allData[key], linePattern[key], x, y, z)
+  if( allData[key].show )
+    drawLine(  d3.select(g), key, allData[key], linePattern[key], x, y, z)
 });
   }
 
