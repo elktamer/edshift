@@ -50,7 +50,8 @@ class ShiftUtil{
 			}
 			return radialData;
 }
-
+//todo: fix bug that ignores the shift edits
+//make sure ends of shifts are on the correct date
 shift2WeekCoverage( shifts){
 		  var shiftCoverage = [];
 			var endOfWeek = new Date(2017, 10, 11)
@@ -58,16 +59,24 @@ shift2WeekCoverage( shifts){
 			for (var d = new Date(2017, 10, 4); d <= endOfWeek; d.setDate(d.getDate() + 1)) {
 			    daysOfWeek.push(new Date(d));
 			}
-				daysOfWeek.forEach( function(day){
-					shifts.forEach(function (shift) {
+			daysOfWeek.forEach( function(day){
+				shifts.forEach(function (shift) {
 					var shiftAssignment  = clone(shift)
 					shiftAssignment.startDate = new Date(shift.startDate)
 					shiftAssignment.endDate = new Date(shift.endDate)
 
 					shiftAssignment.startDate.setFullYear( day.getFullYear() );
 					shiftAssignment.startDate.setMonth( day.getMonth() );
-
 					shiftAssignment.startDate.setDate( day.getDate() );
+					shiftAssignment.startDate.setHours( shift.start)
+
+					shiftAssignment.endDate.setFullYear( day.getFullYear() );
+					shiftAssignment.endDate.setMonth( day.getMonth() );
+					shiftAssignment.endDate.setDate( day.getDate() );
+				if( shift.end < shift.start){
+					Date.setDate( day.getDate()+1 );
+				}
+					shiftAssignment.endDate.setHours( shift.end)
 
 					shiftCoverage.push(shiftAssignment);
 				})
@@ -123,7 +132,8 @@ doctorsPerHour( shiftHours ){
 	}
 	return weekly;
 }
-
+//todo: use actual end time instead of assuming 7 hours
+// the issue is making sure that shifts that end after midnight are the next date
 testDoctorsPerHour( coverage ){
 	var weekly = [];
 	var minor = false;
@@ -132,11 +142,7 @@ testDoctorsPerHour( coverage ){
 		timeOfWeek.setHours(timeOfWeek.getHours() + 1);
 		var mdCount = 0;
 		coverage.forEach( function(shiftAssignment){
-			var endShift = new Date( shiftAssignment.startDate);
-			endShift.setHours(endShift.getHours() + 7);
-
-			if( shiftAssignment.startDate <= timeOfWeek )
-			if(endShift >= timeOfWeek ){
+			if( shiftAssignment.startDate <= timeOfWeek &&  shiftAssignment.endDate >= timeOfWeek ){
 				mdCount++;
 			}
 		})

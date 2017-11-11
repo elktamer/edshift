@@ -1,4 +1,4 @@
-var sim_size = 1000;
+var sim_size = 1;
 
 class EDSimulation{
 
@@ -65,7 +65,7 @@ function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs, startWait ){
 function poissonArrivals( arrivals, hour, ctas){
 	var rate = arrivals[ctas][hour] ;
 
-	return poisson( rate ) ;
+	return rate;//poisson( rate ) ;
 }
 var patientsPerHour = [0.5, 1.1, 1.1]; //this is different for each location, as shown by the PLC "expected waiting" values
 

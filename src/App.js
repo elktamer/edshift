@@ -68,21 +68,27 @@ class App extends Component {
 
   handleShiftEdit(id, val){
     //update shift data
-    hourData.forEach((row,i) => {
+		console.log( "edit: "+id +" "+val)
+		var tempShiftData = this.state.shifts
+    tempShiftData.forEach((row,i) => {
       if( row.id === id){
         row.start = val[0];
         row.end=val[1];
       }
     })
+		
+		this.setState({shifts:tempShiftData})
     var arrivals =historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
-		var test = sUtil.shift2WeekCoverage(hourData) .filter((d,i) => d.location.name === this.state.site);
+		var test = sUtil.shift2WeekCoverage(this.state.shifts) .filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
+		if( typeof historicalData[this.state.site].supply !== "undefined")
+			compareArray( testSupply, historicalData[this.state.site].supply[0] )
+
 		historicalData[this.state.site].supply = [testSupply];
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs );
     historicalData[this.state.site].simulation = simulation.simulationAverages(simulated);
-
-    this.setState({ shifts:hourData})
+		historicalData[this.state.site].simulation.show = true;
   }
 
   componentDidMount() {
@@ -97,7 +103,7 @@ class App extends Component {
 	}
 
   render() {
-    var filteredShiftData = hourData
+    var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
 
     return (
@@ -185,4 +191,13 @@ function loadData(datatype) {
     });
   });
 }
+
+function compareArray(array1, array2){
+		for( var i =0; i < array1.length; i++){
+			if( array1[i]!==array2[i]){
+				console.log( "Item " + i +" is different "+array1[i]+" "+array2[i])
+			}
+		}
+}
+
 export default App
