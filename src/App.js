@@ -32,8 +32,8 @@ var simulation = new EDSimulation();
 const ctasMax = 3;
 
 var historicalData = {};
-var simulated = [[0],[0],[0]];
-loadData("arrivals");
+var simulated = [];
+loadData("arrivals")
 loadData("waiting");
 loadData("lwbs");
 
@@ -76,7 +76,7 @@ class App extends Component {
         row.end=val[1];
       }
     })
-		
+
 		this.setState({shifts:tempShiftData})
     var arrivals =historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
