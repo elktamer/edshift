@@ -48,6 +48,7 @@ class App extends Component {
     this.handleSiteChange = this.handleSiteChange.bind(this)
     this.handleShiftEdit = this.handleShiftEdit.bind(this)
 		this.onChangeDataSet = this.onChangeDataSet.bind(this)
+		this.runSimulation = this.runSimulation.bind(this)
     this.state = { screenWidth: 1400, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2 }
   }
 
@@ -64,6 +65,7 @@ class App extends Component {
   }
   handleSiteChange(d){
     this.setState({site:d})
+		this.runSimulation()
   }
 
   handleShiftEdit(id, val){
@@ -78,7 +80,12 @@ class App extends Component {
     })
 
 		this.setState({shifts:tempShiftData})
-    var arrivals =historicalData[this.state.site].arrivals;
+		this.runSimulation();
+
+  }
+	runSimulation(){
+		if( typeof historicalData[this.state.site] === 'undefined') return;
+		var arrivals =historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
 		var test = sUtil.shift2WeekCoverage(this.state.shifts) .filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
@@ -89,10 +96,12 @@ class App extends Component {
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs );
     historicalData[this.state.site].simulation = simulation.simulationAverages(simulated);
 		historicalData[this.state.site].simulation.show = true;
-  }
+	}
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize, false)
+		this.runSimulation();
+
     this.onResize()
   }
 
@@ -101,7 +110,7 @@ class App extends Component {
 		this.setState({ site:this.state.site})
 
 	}
-
+//TODO: show what the unused capacity is during the simulation; how many hours is the queue length zero
   render() {
     var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
@@ -117,11 +126,11 @@ class App extends Component {
         <Radio value="SHC" />SHC
         <Radio value="ACH" />ACH
       </RadioGroup>
-			<label> <Checkbox name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
-			<label> <Checkbox name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
-			<label> <Checkbox name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
-			<label> <Checkbox name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
-			<label> <Checkbox name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+			<label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
+			<label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
+			<label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
+			<label> <Checkbox defaultChecked name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
+			<label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
 
 
 
