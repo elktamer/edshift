@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import {RadioGroup, Radio} from 'react-radio-group'
 import Checkbox from 'rc-checkbox'
 import './App.css'
+import 'antd/dist/antd.css';
+import { Row, Col } from 'antd';
+
 import WeekChart from './WeekChart'
 
 import ShiftEditor from './ShiftEditor'
@@ -120,31 +123,45 @@ class App extends Component {
     return (
       <div className="App">
       <h2>ED Shifts</h2>
-      <div>
-      <RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
-        <Radio value="RGH" />RGH
-        <Radio value="FMC" />FMC
-        <Radio value="PLC" />PLC
-        <Radio value="SHC" />SHC
-        <Radio value="ACH" />ACH
-      </RadioGroup>
-			<label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
-			<label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
-			<label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
-			<label> <Checkbox defaultChecked name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
-			<label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+			<Row gutter={16}>
+			<Col span={4} >
+			</Col>
+  <Col span={12} >
+	<div>
+	<RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
+		<Radio value="RGH" />RGH
+		<Radio value="FMC" />FMC
+		<Radio value="PLC" />PLC
+		<Radio value="SHC" />SHC
+		<Radio value="ACH" />ACH
+	</RadioGroup>
+	<label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
+	<label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
+	<label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
+	<label> <Checkbox defaultChecked name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
+	<label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+	<WeekChart hoverElement={this.state.hover} onHover={this.onHover}
+	colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 3]}
+	site={this.state.site} />
+	</div>
+	</Col>
+	<Col span={4} >
+	</Col>
+</Row>
+<Row gutter={16}>
+<Col span={12} >
+<div>
+<ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 
+</div>
+</Col>
+<Col span={12} >
+<WaitDistribution data={simulated} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 
-
-		  <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
-      colorScale={colorScale} data={historicalData} size={[4*this.state.screenWidth/5, this.state.screenHeight / 3]}
-      site={this.state.site} />
-
-      <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
-
-			<WaitDistribution data={simulated} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
-
-	    </div>
+<div>
+</div>
+</Col>
+</Row>
       </div>
     )
   }
