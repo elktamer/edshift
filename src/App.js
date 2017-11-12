@@ -204,7 +204,7 @@ function loadData(datatype) {
           if( typeof historicalData[location][datatype][ctasNumber] === "undefined"){
             historicalData[location][datatype][ctasNumber]=[];
           }
-          if( ctasNumber < ctasMax &&  ctasNumber > 0){
+          if( ctasNumber < ctasMax ){
             var dayOfWeek = Math.floor((k-2) / modsize );
             var hour = d[1] + dayOfWeek*24
             historicalData[location][datatype][ctasNumber][hour]=d[k];
