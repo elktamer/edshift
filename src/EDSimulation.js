@@ -1,10 +1,11 @@
 var sim_size = 1;
-
+//TODO: track the amount of time that there is over capacity
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs){
 
     var simulations = [];
+    simulations.unused = 0;
     simulations.push([]);//skip the CTAS 1 values
     for( var ctasIndex = 1; ctasIndex < 5; ctasIndex++){
       var ctasSim = [];
@@ -43,6 +44,7 @@ class EDSimulation{
 
 function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs, startWait ){
   var queue =[];
+  queue.unused =0;
   var waiting = startWait;
   //		console.log( "simulation");
 
@@ -55,7 +57,8 @@ function simulatedWeek( doctorSupply, ctasIndex,arrivals,lwbs, startWait ){
     waiting = waiting + arrival;// Preliminary queue
     waiting = waiting - reneged;
     var treated = Math.min( capacity, waiting);
-
+    if( treated === 0)
+      queue.unused++;
     waiting = waiting - treated;
     queue.push( waiting );
   }
