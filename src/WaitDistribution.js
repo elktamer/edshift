@@ -33,12 +33,12 @@ class WaitDistribution extends Component {
     .domain([0, 25])
     .rangeRound([0, width]);
 
-var realdata = this.props.data[this.props.ctas];
+var realdata = this.props.data;
 if( typeof realdata === 'undefined') return;//won't work for a single run simulation
     var combineddata = [];
     realdata.forEach( function(d){
       d.forEach(function(r){
-        combineddata.push(r)
+        combineddata.push(r[2])
       })
     })
 
