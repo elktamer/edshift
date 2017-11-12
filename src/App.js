@@ -93,6 +93,8 @@ class App extends Component {
 			compareArray( testSupply, historicalData[this.state.site].supply[0] )
 
 		historicalData[this.state.site].supply = [testSupply];
+		historicalData[this.state.site].supply.show = true;
+
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs );
     historicalData[this.state.site].simulation = simulation.simulationAverages(simulated);
 		historicalData[this.state.site].simulation.show = true;

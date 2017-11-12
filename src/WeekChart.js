@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import * as d3 from 'd3'
 
+//TODO: should doctorSupply be squared lines?
 var linePattern = {arrivals:"2, 4, 1, 2", waiting:"2,2", lwbs:"1,1", simulation:"4,1", supply:"3,3,1,1" };
 class WeekChart extends Component {
   constructor(props){
