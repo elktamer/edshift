@@ -3,9 +3,12 @@ var sim_size = 1;
 //TODO: track both ctas2 & ctas3 in the simultation( & ctas1?)
 class EDSimulation{
 
-   generate_simulated_queue(doctorSupply, arrivals, lwbs){
+   generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
     var simulations = [];
-    var lastwait = [0,0,0];
+      var lastwait =[];
+    for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
+     lastwait.push(waiting[ctasIndex][7*24-1]);
+    }
     for( var n =0; n < sim_size; n++){
       var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait);
       lastwait = weekSim[weekSim.length-1]
@@ -41,18 +44,20 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait ){
 
 //TODO: take lower ctas values into account for each level
   for( var t = 0; t < 7*24; t++){
-    var arrival = [], reneged = [], treated =[];
-    var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
+    var arrival = [], reneged = [];
     waiting = waiting.slice(0);
 
+    var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
       arrival[ctasIndex] =  poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       reneged[ctasIndex]  = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
+
+      var treated = Math.min( capacity, waiting[ctasIndex] );
+      capacity = capacity - treated;      //need to take into account how many were treated from higher priority ctas
+      console.log( t+" "+ ctasIndex+" "+capacity);
+      waiting[ctasIndex]  = waiting[ctasIndex]  - treated ;
       waiting[ctasIndex]  = waiting[ctasIndex]  + arrival[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  - reneged[ctasIndex] ;
-      treated[ctasIndex]  = Math.min( capacity, waiting[ctasIndex] );
-      //need to take into account how many were treated from higher priority ctas
-      waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
     }
     queue.push( waiting );
   }
@@ -68,7 +73,9 @@ var patientsPerHour = [0.5, 1.1, 1.1]; //this is different for each location, as
 
 var base_rate = 2.0;
 function doctorCapacity( supply, hour){
-    return base_rate+Math.log(supply[hour]);
+  return base_rate+Math.log(supply[hour])*3.75;
+
+//    return supply[hour]*1.6;
 }
 
 function poisson( lambda) {
