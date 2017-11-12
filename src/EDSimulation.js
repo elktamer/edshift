@@ -1,6 +1,6 @@
 var sim_size = 1;
 //TODO: track the amount of time that there is over capacity
-//TODO: track both ctas2 & ctas3 in the simultation( & ctas1?)
+//TODO: ensure the histogram of the simulation matches a histogram of the known waits
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){

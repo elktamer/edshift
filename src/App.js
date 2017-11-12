@@ -118,50 +118,69 @@ class App extends Component {
   render() {
     var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
+   var waitingHistogramData = [];
+	 if( typeof historicalData[this.state.site] !== 'undefined'){
+		 for( var h = 0; h < 168; h++){
+			 var hourOfData = [];
+			  for( var c = 0; c < 3; c++){
+					hourOfData.push( historicalData[this.state.site].waiting[c][h] );
+				}
+				waitingHistogramData.push( hourOfData)
+		 }
 
+	 }
     return (
-      <div className="App">
-      <h2>ED Shifts</h2>
+			<div className="App">
+			 <h2>ED Shifts</h2>
+			 <Row gutter={16}>
+			  <Col span={4} >
+			  </Col>
+			  <Col span={12} >
+			   <div>
+			    <RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
+			    <Radio value="RGH" />RGH
+			    <Radio value="FMC" />FMC
+			    <Radio value="PLC" />PLC
+			    <Radio value="SHC" />SHC
+		    	<Radio value="ACH" />ACH
+		     </RadioGroup>
+			   <label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
+			   <label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
+			   <label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
+			   <label> <Checkbox defaultChecked name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
+		     <label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
+			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 3]}
+			      site={this.state.site} />
+			  </div>
+			 </Col>
+			 <Col span={4} >
+			 </Col>
+			</Row>
 			<Row gutter={16}>
-			<Col span={4} >
+			 <Col span={12} >
+			  <div>
+			   <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			  </div>
+			 </Col>
+			<Col span={12} >
+			 <div>
+			  <WaitDistribution data={simulated} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			 </div>
 			</Col>
-  <Col span={12} >
-	<div>
-	<RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
-		<Radio value="RGH" />RGH
-		<Radio value="FMC" />FMC
-		<Radio value="PLC" />PLC
-		<Radio value="SHC" />SHC
-		<Radio value="ACH" />ACH
-	</RadioGroup>
-	<label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
-	<label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
-	<label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
-	<label> <Checkbox defaultChecked name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
-	<label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
-	<WeekChart hoverElement={this.state.hover} onHover={this.onHover}
-	colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 3]}
-	site={this.state.site} />
-	</div>
-	</Col>
-	<Col span={4} >
-	</Col>
-</Row>
-<Row gutter={16}>
-<Col span={12} >
-<div>
-<ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
-
-</div>
-</Col>
-<Col span={12} >
-<WaitDistribution data={simulated} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
-
-<div>
-</div>
-</Col>
-</Row>
-      </div>
+		 </Row>
+		 <Row gutter={16}>
+			<Col span={12} >
+			 <div>
+			 <WaitDistribution data={[waitingHistogramData]} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			 </div>
+			</Col>
+		 <Col span={12} >
+			<div>
+			</div>
+		 </Col>
+		</Row>
+		</div>
     )
   }
 }
