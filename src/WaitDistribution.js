@@ -34,7 +34,7 @@ class WaitDistribution extends Component {
     .rangeRound([0, width]);
 
 var realdata = this.props.data;
-if(  realdata.length === 0 ||  realdata[0].length === 0 ) return;//won't work for a single run simulation
+if(  typeof realdata === 'undefined' || realdata.length === 0 ||  realdata[0].length === 0 ) return;//won't work for a single run simulation
     var combineddata = [];
     realdata.forEach( function(d){
       d.forEach(function(r){

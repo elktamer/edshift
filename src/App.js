@@ -96,8 +96,14 @@ class App extends Component {
 		historicalData[this.state.site].supply.show = true;
 
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
-    historicalData[this.state.site].simulation = simulation.simulationAverages(simulated);
+    historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
 		historicalData[this.state.site].simulation.show = true;
+
+		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
+		historicalData[this.state.site].treated.show = true;
+		  historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
+			historicalData[this.state.site].measuredRate.show = true;
+
 	}
 
   componentDidMount() {
@@ -149,6 +155,9 @@ class App extends Component {
 			   <label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
 			   <label> <Checkbox defaultChecked name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
 		     <label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+				 <label> <Checkbox defaultChecked name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
+				 <label> <Checkbox defaultChecked name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
+
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
 			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 3]}
 			      site={this.state.site} />
@@ -165,7 +174,7 @@ class App extends Component {
 			 </Col>
 			<Col span={12} >
 			 <div>
-			  <WaitDistribution data={simulated} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			  <WaitDistribution data={simulated.waiting} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 			 </div>
 			</Col>
 		 </Row>

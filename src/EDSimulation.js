@@ -4,15 +4,16 @@ var sim_size = 1;
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
-    var simulations = [];
-      var lastwait =[];
+    var simulations = {waiting:[],treated:[],unused:[]};
+    var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
      lastwait.push(waiting[ctasIndex][7*24-1]);
     }
     for( var n =0; n < sim_size; n++){
       var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait);
       lastwait = weekSim[weekSim.length-1]
-      simulations.push(weekSim);
+      simulations.waiting.push(weekSim.queue);
+      simulations.treated.push(weekSim.treated);
     }
     return simulations;
   }
@@ -36,15 +37,31 @@ class EDSimulation{
   	}
   	return averages;//simulations;
   }
+
+ measuredRate(arrivals, lwbs, waiting){
+    var rates=[];
+    for( var ctasIndex =0; ctasIndex < 3; ctasIndex++){
+      var rate=[];
+      var prevwait =waiting[ctasIndex][168-1];
+
+      for( var hour = 0; hour <168;hour++){
+        var current = prevwait - waiting[ctasIndex][hour]+arrivals[ctasIndex][hour];
+        rate.push(current);
+        prevwait=waiting[ctasIndex][hour];
+      }
+      rates.push(rate);
+    }
+    return rates;
+  }
 }
 
 function simulatedWeek( doctorSupply, arrivals, lwbs, startWait ){
   var queue =[];
   var waiting = startWait.slice(0);
-
+  var numTreated = [];
 //TODO: take lower ctas values into account for each level
   for( var t = 0; t < 7*24; t++){
-    var arrival = [], reneged = [];
+    var arrival = [], reneged = [], treated=[];
     waiting = waiting.slice(0);
 
     var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
@@ -52,16 +69,17 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait ){
       arrival[ctasIndex] =  poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       reneged[ctasIndex]  = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
 
-      var treated = Math.min( capacity, waiting[ctasIndex] );
-      capacity = capacity - treated;      //need to take into account how many were treated from higher priority ctas
+      treated[ctasIndex] = Math.min( capacity, waiting[ctasIndex] );
+      capacity = capacity - treated[ctasIndex];      //need to take into account how many were treated from higher priority ctas
       console.log( t+" "+ ctasIndex+" "+capacity);
-      waiting[ctasIndex]  = waiting[ctasIndex]  - treated ;
+      waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  + arrival[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  - reneged[ctasIndex] ;
     }
     queue.push( waiting );
+    numTreated.push( treated );
   }
-  return queue;
+  return {queue:queue, treated:numTreated};
 }
 
 function poissonArrivals( arrivals, hour, ctas){
