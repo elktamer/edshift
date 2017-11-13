@@ -101,9 +101,12 @@ class App extends Component {
 
 		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
 		historicalData[this.state.site].treated.show = true;
-		  historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
-			historicalData[this.state.site].measuredRate.show = true;
 
+		historicalData[this.state.site].md_diff = simulation.simulationAverages(simulated.md_diff)
+		historicalData[this.state.site].md_diff.show = true;
+
+		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
+	  historicalData[this.state.site].measuredRate.show = true;
 	}
 
   componentDidMount() {
@@ -157,9 +160,11 @@ class App extends Component {
 		     <label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
 				 <label> <Checkbox defaultChecked name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
 				 <label> <Checkbox defaultChecked name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
+				 <label> <Checkbox defaultChecked name="md_diff" onChange={this.onChangeDataSet} />&nbsp; md difference</label>
+
 
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
-			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 3]}
+			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 2]}
 			      site={this.state.site} />
 			  </div>
 			 </Col>
