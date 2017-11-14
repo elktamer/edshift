@@ -4,7 +4,7 @@ var sim_size = 1;
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
-    var simulations = {waiting:[],treated:[],unused:[],md_diff:[]};
+    var simulations = {waiting:[],treated:[],unused:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
      lastwait.push(waiting[ctasIndex][7*24-1]);
@@ -14,7 +14,9 @@ class EDSimulation{
       lastwait = weekSim[weekSim.length-1]
       simulations.waiting.push(weekSim.queue);
       simulations.treated.push(weekSim.treated);
-      simulations.md_diff.push(weekSim.md_diff);
+      simulations.md_diff.push(weekSim.md_diff)
+      simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
+      simulations.excessCapacity.push( weekSim.excessCapacity)
     }
     return simulations;
   }
@@ -38,6 +40,24 @@ class EDSimulation{
   	}
   	return averages;//simulations;
   }
+
+  simulationAverageSingle( simulations){
+    var averages = [];
+    var avg_queue =[];
+
+    for( var hour =0; hour < 7*24; hour++){
+      var total = 0;
+      for( var n =0; n < sim_size; n++){
+        total += simulations[n][hour];
+      }
+      var avg = total/sim_size;
+      avg_queue.push( avg);
+    }
+
+    averages.push( avg_queue );
+
+    return averages;//simulations;
+  }
 // the treatment rate is the current wait, minus the previous wait, plus the current arrivals
  measuredRate(arrivals, lwbs, waiting){
     var rates=[];
@@ -60,9 +80,11 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
   var waiting = startWait.slice(0);
   var numTreated = [];
   var mdDiff = [];
+  var treatmentBySupply = [];
+  var excessCapacity = [];
 //TODO: take lower ctas values into account for each level
   for( var t = 0; t < 7*24; t++){
-    var arrival = [], reneged = [], treated=[], difference=[];
+    var arrival = [], reneged = [], treated=[], difference=[], treatmentRate=[];
     waiting = waiting.slice(0);
 
     var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
@@ -90,11 +112,17 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       waiting[ctasIndex]  = waiting[ctasIndex]  - reneged[ctasIndex] ;
     //  difference[ctasIndex] =  waitArray[ctasIndex][t] -  waiting[ctasIndex];
     }
+    excessCapacity.push( capacity);
     queue.push( waiting );
     numTreated.push( treated );
     mdDiff.push( difference);
+<<<<<<< HEAD
+=======
+    treatmentBySupply.push(treatmentRate);
+
+>>>>>>> 4e1f886658656a16f79865ddce3063bec16cbd0d
   }
-  return {queue:queue, treated:numTreated, md_diff:mdDiff};
+  return {queue:queue, treated:numTreated, md_diff:mdDiff, treatmentBySupply:treatmentBySupply, excessCapacity:excessCapacity};
 }
 
 function poissonArrivals( arrivals, hour, ctas){
