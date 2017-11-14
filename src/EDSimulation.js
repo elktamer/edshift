@@ -116,11 +116,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
     queue.push( waiting );
     numTreated.push( treated );
     mdDiff.push( difference);
-<<<<<<< HEAD
-=======
     treatmentBySupply.push(treatmentRate);
-
->>>>>>> 4e1f886658656a16f79865ddce3063bec16cbd0d
   }
   return {queue:queue, treated:numTreated, md_diff:mdDiff, treatmentBySupply:treatmentBySupply, excessCapacity:excessCapacity};
 }
