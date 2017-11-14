@@ -1,10 +1,9 @@
 var sim_size = 1;
-//TODO: track the amount of time with unused capacity
 //TODO: ensure the histogram of the simulation matches a histogram of the known waits
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
-    var simulations = {waiting:[],treated:[],unused:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
+    var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
      lastwait.push(waiting[ctasIndex][7*24-1]);
@@ -96,7 +95,6 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       if( ctasIndex == 2){
         treated[ctasIndex] = Math.min( capacity*1.2, waiting[ctasIndex] );
       }
-      capacity = Math.max( 0, capacity - treated[ctasIndex]);
 
   /* compare values */
       var previousWait = waitArray[ctasIndex][7*24-1];
@@ -104,8 +102,12 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
         previousWait = waitArray[ctasIndex][t-1]
       }
       var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
+      treatmentRate.push( {count:doctorSupply[t], capacity: capacity, waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] , treated:measured })
+
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
+
+      capacity = Math.max( 0, capacity - treated[ctasIndex]);//this reduction should match the modified used for each ctas type
 
       waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  + arrival[ctasIndex] ;
