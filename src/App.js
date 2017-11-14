@@ -105,6 +105,9 @@ class App extends Component {
 		historicalData[this.state.site].md_diff = simulation.simulationAverages(simulated.md_diff)
 		historicalData[this.state.site].md_diff.show = true;
 
+		historicalData[this.state.site].excessCapacity = simulation.simulationAverageSingle(simulated.excessCapacity)
+		historicalData[this.state.site].excessCapacity.show = true;
+
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
 	  historicalData[this.state.site].measuredRate.show = true;
 	}
@@ -137,6 +140,7 @@ class App extends Component {
 				waitingHistogramData.push( hourOfData)
 		 }
 
+
 	 }
     return (
 			<div className="App">
@@ -153,6 +157,7 @@ class App extends Component {
 			    <Radio value="SHC" />SHC
 		    	<Radio value="ACH" />ACH
 		     </RadioGroup>
+
 			   <label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
 			   <label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
 			   <label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
@@ -161,6 +166,7 @@ class App extends Component {
 				 <label> <Checkbox defaultChecked name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
 				 <label> <Checkbox defaultChecked name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
 				 <label> <Checkbox defaultChecked name="md_diff" onChange={this.onChangeDataSet} />&nbsp; md difference</label>
+				 <label> <Checkbox defaultChecked name="excessCapacity" onChange={this.onChangeDataSet} />&nbsp; Excess Capacity</label>
 
 
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
