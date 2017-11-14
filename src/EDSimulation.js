@@ -66,44 +66,33 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
     waiting = waiting.slice(0);
 
     var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
+
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
-      arrival[ctasIndex] =  poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
-      reneged[ctasIndex]  = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
-      if( waiting[ctasIndex] < 0){
-        console.log( t +" error "+waiting[ctasIndex])
-      }
-      treated[ctasIndex] = Math.min( capacity, waiting[ctasIndex] );
+      arrival[ctasIndex] = poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
+      reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
+      treated[ctasIndex] = Math.min( capacity*.75, waiting[ctasIndex] );
       if( ctasIndex == 2){
-        treated[ctasIndex] = Math.min( capacity*2, waiting[ctasIndex] );
+        treated[ctasIndex] = Math.min( capacity*1.2, waiting[ctasIndex] );
       }
-      capacity = Math.max( 0, capacity - treated[ctasIndex]);      //need to take into account how many were treated from higher priority ctas
-//match up each of the known values, only difference should be the treated value
-    //  console.log( t+" "+ ctasIndex+" "+capacity);
-    var previousWait = 0;
+      capacity = Math.max( 0, capacity - treated[ctasIndex]);
+
+  /* compare values */
+      var previousWait = waitArray[ctasIndex][7*24-1];
       if( t > 0 ){
-          if(  arrivals[ctasIndex][t] != arrival[ctasIndex] ){
-            console.log( t +" arrival error ")
-          }
-          if(  lwbs[ctasIndex][t] != reneged[ctasIndex]  ){
-            console.log( t +" lwbs error ")
-          }
-          previousWait = waitArray[ctasIndex][t-1]
-        }
-        //  var measured = waitArray[ctasIndex][t-1] - waitArray[ctasIndex][t] + arrivals[ctasIndex][t]-lwbs[ctasIndex][t];
-        var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t]-lwbs[ctasIndex][t];
-          //what about using the actual waits and comparing just the treatment calc?
-          //this could point out differences in the estimate of the schedule vs reality
-        difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
-      //  console.log( t+" measured: "+measured +" simulated: "+testValue)
+        previousWait = waitArray[ctasIndex][t-1]
+      }
+      var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
+      difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
+  /* to here: compare values */
 
       waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  + arrival[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  - reneged[ctasIndex] ;
+    //  difference[ctasIndex] =  waitArray[ctasIndex][t] -  waiting[ctasIndex];
     }
     queue.push( waiting );
     numTreated.push( treated );
     mdDiff.push( difference);
-
   }
   return {queue:queue, treated:numTreated, md_diff:mdDiff};
 }
