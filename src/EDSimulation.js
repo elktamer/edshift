@@ -75,6 +75,7 @@ class EDSimulation{
 }
 
 function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
+  var ctasMod = [0.75,0.75, 2.0]
   var queue =[];
   var waiting = startWait.slice(0);
   var numTreated = [];
@@ -91,10 +92,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
       arrival[ctasIndex] = poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
-      treated[ctasIndex] = Math.min( capacity*.445, waiting[ctasIndex] );
-      if( ctasIndex == 2){
-        treated[ctasIndex] = Math.min( capacity*1.0, waiting[ctasIndex] );
-      }
+      treated[ctasIndex] = Math.min( capacity * ctasMod[ctasIndex], waiting[ctasIndex] );
 
   /* compare values */
       var previousWait = waitArray[ctasIndex][7*24-1];
@@ -107,7 +105,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
 
-      capacity = Math.max( 0, capacity - treated[ctasIndex]);//this reduction should match the modified used for each ctas type
+      capacity = Math.max( 0, capacity - treated[ctasIndex]/ ctasMod[ctasIndex]);//this reduction should match the modified used for each ctas type
 
       waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  + arrival[ctasIndex] ;

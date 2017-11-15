@@ -87,29 +87,30 @@ class App extends Component {
 		if( typeof historicalData[this.state.site] === 'undefined') return;
 		var arrivals =historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
+		historicalData[this.state.site].lwbs.show=false;
+
+
+
 		var test = sUtil.shift2WeekCoverage(this.state.shifts) .filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
 		if( typeof historicalData[this.state.site].supply !== "undefined")
 			compareArray( testSupply, historicalData[this.state.site].supply[0] )
 
 		historicalData[this.state.site].supply = [testSupply];
-		historicalData[this.state.site].supply.show = true;
+		historicalData[this.state.site].supply.show = false;
 
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
     historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
 		historicalData[this.state.site].simulation.show = true;
 
 		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
-		historicalData[this.state.site].treated.show = true;
+		historicalData[this.state.site].treated.show = false;
 
 		historicalData[this.state.site].md_diff = simulation.simulationAverages(simulated.md_diff)
-		historicalData[this.state.site].md_diff.show = true;
-
-		historicalData[this.state.site].excessCapacity = simulation.simulationAverageSingle(simulated.excessCapacity)
-		historicalData[this.state.site].excessCapacity.show = true;
+		historicalData[this.state.site].md_diff.show = false;
 
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
-	  historicalData[this.state.site].measuredRate.show = true;
+	  historicalData[this.state.site].measuredRate.show = false;
 	}
 
   componentDidMount() {
@@ -156,7 +157,6 @@ class App extends Component {
 			    <Radio value="SHC" />SHC
 		    	<Radio value="ACH" />ACH
 		     </RadioGroup>
-
 			   <label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
 			   <label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
 			   <label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
@@ -165,7 +165,6 @@ class App extends Component {
 				 <label> <Checkbox defaultChecked name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
 				 <label> <Checkbox defaultChecked name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
 				 <label> <Checkbox defaultChecked name="md_diff" onChange={this.onChangeDataSet} />&nbsp; md difference</label>
-				 <label> <Checkbox defaultChecked name="excessCapacity" onChange={this.onChangeDataSet} />&nbsp; Excess Capacity</label>
 
 
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
