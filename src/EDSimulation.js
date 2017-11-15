@@ -93,7 +93,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
       treated[ctasIndex] = Math.min( capacity*.445, waiting[ctasIndex] );
       if( ctasIndex == 2){
-        treated[ctasIndex] = Math.min( capacity*1.1, waiting[ctasIndex] );
+        treated[ctasIndex] = Math.min( capacity*1.0, waiting[ctasIndex] );
       }
 
   /* compare values */
