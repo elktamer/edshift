@@ -91,9 +91,9 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
       arrival[ctasIndex] = poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
-      treated[ctasIndex] = Math.min( capacity*.75, waiting[ctasIndex] );
+      treated[ctasIndex] = Math.min( capacity*.445, waiting[ctasIndex] );
       if( ctasIndex == 2){
-        treated[ctasIndex] = Math.min( capacity*1.2, waiting[ctasIndex] );
+        treated[ctasIndex] = Math.min( capacity*1.1, waiting[ctasIndex] );
       }
 
   /* compare values */
