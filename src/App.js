@@ -14,6 +14,8 @@ import EDSimulation from './EDSimulation'
 import WaitDistribution from './WaitDistribution'
 
 import * as d3 from 'd3'
+import nj from 'numjs';
+
 
 shiftdata.forEach( function(shift){
 		if( shift.description=== "mon to fri")
@@ -111,6 +113,11 @@ class App extends Component {
 
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
 	  historicalData[this.state.site].measuredRate.show = false;
+		var tarrary = simulated.treatmentBySupply[0].map( function(d){
+			return [d[0].count,d[0].treated,d[1].treated,d[2].treated];
+		});
+
+		solveLeastSquares();
 	}
 
   componentDidMount() {
@@ -256,6 +263,9 @@ function loadData(datatype) {
   });
 }
 
+function solveLeastSquares(){
+	var a = nj.array([2,3,4]);
+}
 function compareArray(array1, array2){
 		for( var i =0; i < array1.length; i++){
 			if( array1[i]!==array2[i]){

@@ -100,7 +100,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
         previousWait = waitArray[ctasIndex][t-1]
       }
       var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
-      treatmentRate.push( {count:doctorSupply[t], capacity: capacity, waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] , treated:measured })
+      treatmentRate.push( {count:doctorSupply[t], time: t % 24, waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] , treated:measured })
 
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
