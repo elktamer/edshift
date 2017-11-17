@@ -14,8 +14,6 @@ import EDSimulation from './EDSimulation'
 import WaitDistribution from './WaitDistribution'
 
 import * as d3 from 'd3'
-import nj from 'numjs';
-
 
 shiftdata.forEach( function(shift){
 		if( shift.description=== "mon to fri")
@@ -114,8 +112,49 @@ class App extends Component {
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
 	  historicalData[this.state.site].measuredRate.show = false;
 		var tarrary = simulated.treatmentBySupply[0].map( function(d){
-			return [d[0].count,d[0].treated,d[1].treated,d[2].treated];
+			var sum = d.reduce(function(a, b) {
+				return a + b.treated;
+			}, 0);
+			var results = d.map( function( e ){
+				return e.treated;
+			})
+			results.splice(0,0,d[0].count, sum);
+			return results;
 		});
+
+//a: create an object that has an entry for each mdcount.
+// each entry will have a count of the h(ours with that count, and a sum for the amount of people numTreated for each ctas type
+// the count divided by the count will give the number to use for the expected treated value
+// in the simulation
+var expectedTreatment = {};
+tarrary.forEach( function(t){
+	if( typeof expectedTreatment[t[0]] === 'undefined' ){
+		expectedTreatment[t[0]] = {count:0,ctas1:0,ctas2:0,ctas3:0};
+	}
+	expectedTreatment[t[0]].count++;
+expectedTreatment[t[0]].ctas1+=t[2];
+expectedTreatment[t[0]].ctas2+=t[3];
+expectedTreatment[t[0]].ctas3+=t[4];
+});
+console.log( expectedTreatment);
+		var sum = tarrary.reduce(function(a, b) {
+			 return a + b[1]/b[0];
+		 },0);
+		var avg = sum / tarrary.length;
+		 sum = tarrary.reduce(function(a, b) {
+			 return a + b[2]/b[0];
+		 },0);
+		var avg1 = sum / tarrary.length;
+		 sum = tarrary.reduce(function(a, b) {
+			 return a + b[3]/b[0];
+		 },0);
+		var avg2 = sum / tarrary.length;
+		sum = tarrary.reduce(function(a, b) {
+	 	 return a + b[4]/b[0];
+	  },0);
+	 var avg3 = sum / tarrary.length;
+
+//what I really want here is the average number treated for each ctas and md count
 
 		solveLeastSquares();
 	}
@@ -264,7 +303,7 @@ function loadData(datatype) {
 }
 
 function solveLeastSquares(){
-	var a = nj.array([2,3,4]);
+
 }
 function compareArray(array1, array2){
 		for( var i =0; i < array1.length; i++){

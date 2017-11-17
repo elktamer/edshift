@@ -75,7 +75,7 @@ class EDSimulation{
 }
 
 function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
-  var ctasMod = [0.75,0.75, 2.0]
+  var ctasMod = [1.0, 0.68, 0.80]//should these add up to 1.0?
   var queue =[];
   var waiting = startWait.slice(0);
   var numTreated = [];
@@ -105,7 +105,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
 
-      capacity = Math.max( 0, capacity - treated[ctasIndex]/ ctasMod[ctasIndex]);//this reduction should match the modified used for each ctas type
+  //    capacity = Math.max( 0, capacity - treated[ctasIndex]/ ctasMod[ctasIndex]);//this reduction should match the modified used for each ctas type
 
       waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
       waiting[ctasIndex]  = waiting[ctasIndex]  + arrival[ctasIndex] ;
