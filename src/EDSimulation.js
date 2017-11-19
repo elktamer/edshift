@@ -75,24 +75,25 @@ class EDSimulation{
 }
 
 function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
-  var ctasMod = [1.0, 0.68, 0.80]//should these add up to 1.0?
   var queue =[];
   var waiting = startWait.slice(0);
   var numTreated = [];
   var mdDiff = [];
   var treatmentBySupply = [];
   var excessCapacity = [];
-//TODO: take lower ctas values into account for each level
+//TODO: take lower ctas values into ac"count" for each level
   for( var t = 0; t < 7*24; t++){
     var arrival = [], reneged = [], treated=[], difference=[], treatmentRate=[];
     waiting = waiting.slice(0);
 
-    var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
+    //var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
 
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
       arrival[ctasIndex] = poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
-      treated[ctasIndex] = Math.min( capacity * ctasMod[ctasIndex], waiting[ctasIndex] );
+      waiting[ctasIndex] = waiting[ctasIndex] + arrival[ctasIndex] ;
+      waiting[ctasIndex] = waiting[ctasIndex] - reneged[ctasIndex] ;
+      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t],ctasIndex+1 ), waiting[ctasIndex] );
 
   /* compare values */
       var previousWait = waitArray[ctasIndex][7*24-1];
@@ -100,7 +101,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
         previousWait = waitArray[ctasIndex][t-1]
       }
       var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
-      treatmentRate.push( {count:doctorSupply[t], time: t % 24, waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] , treated:measured })
+      treatmentRate.push( {"count":doctorSupply[t], time: t % 24, waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] , treated:measured })
 
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
@@ -108,11 +109,10 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
   //    capacity = Math.max( 0, capacity - treated[ctasIndex]/ ctasMod[ctasIndex]);//this reduction should match the modified used for each ctas type
 
       waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
-      waiting[ctasIndex]  = waiting[ctasIndex]  + arrival[ctasIndex] ;
-      waiting[ctasIndex]  = waiting[ctasIndex]  - reneged[ctasIndex] ;
+
     //  difference[ctasIndex] =  waitArray[ctasIndex][t] -  waiting[ctasIndex];
     }
-    excessCapacity.push( capacity);
+  //  excessCapacity.push( capacity);
     queue.push( waiting );
     numTreated.push( treated );
     mdDiff.push( difference);
@@ -151,5 +151,20 @@ function poisson( lambda) {
 function renegCalc(lwbs,ctas, hour){
 	var reneged = lwbs[ctas][hour];
 	return reneged;
+}
+
+var recordedTreatment =
+{"data":{"2":{"count": 49, "ctas1": 40.848888888888894, "ctas2": 94.81111111111109, "ctas3": 102.3711111111111},
+"3":{"count": 14, "ctas1": 14.239999999999998, "ctas2": 37.12166666666667, "ctas3": 42.11555555555556},
+"5":{"count": 14, "ctas1": 13.34, "ctas2": 34.696666666666665, "ctas3": 43.41222222222222},
+"6":{"count": 42, "ctas1": 44.39888888888889, "ctas2": 142.58722222222227, "ctas3": 179.69333333333333},
+"7":{"count": 42, "ctas1": 46.260000000000005, "ctas2": 140.2144444444444, "ctas3": 185.23611111111114},
+"8":{"count": 7, "ctas1": 6.890000000000001, "ctas2": 26.77722222222222, "ctas3": 34.26611111111111}}};
+
+function expectedTreatment(count, ctas){
+  var record = recordedTreatment.data[count];
+  var result = record["ctas"+ctas]/record.count;
+
+  return result;
 }
 export default EDSimulation
