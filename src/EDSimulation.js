@@ -62,7 +62,7 @@ class EDSimulation{
     var rates=[];
     for( var ctasIndex =0; ctasIndex < 3; ctasIndex++){
       var rate=[];
-
+      rate.push(0);
       for( var hour = 1; hour <168; hour++){
         var current = waiting[ctasIndex][hour-1] - waiting[ctasIndex][hour] + arrivals[ctasIndex][hour];
         current = current - lwbs[ctasIndex][hour];
@@ -81,14 +81,13 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
   var mdDiff = [];
   var treatmentBySupply = [];
   var excessCapacity = [];
-//TODO: take lower ctas values into ac"count" for each level
+//TODO: take lower ctas values into account for each level ??
   for( var t = 0; t < 7*24; t++){
     var arrival = [], reneged = [], treated=[], difference=[], treatmentRate=[];
     waiting = waiting.slice(0);
 
-    //var capacity = doctorCapacity( doctorSupply, t ) ; //todo: simulated capacity(exponential distribution)
-
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
+      var debugWait = waiting[ctasIndex] ;
       arrival[ctasIndex] = poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
       waiting[ctasIndex] = waiting[ctasIndex] + arrival[ctasIndex] ;
@@ -101,16 +100,17 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
         previousWait = waitArray[ctasIndex][t-1]
       }
       var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
-      treatmentRate.push( {"count":doctorSupply[t], time: t % 24, waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] , treated:measured })
-
+      treatmentRate.push( { count: doctorSupply[t],
+                            time: t % 24,
+                            waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] ,
+                            treated: measured })
+//this is including arrivals and lwbs, but shouldn't be??
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
-
-  //    capacity = Math.max( 0, capacity - treated[ctasIndex]/ ctasMod[ctasIndex]);//this reduction should match the modified used for each ctas type
-
       waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
-
-    //  difference[ctasIndex] =  waitArray[ctasIndex][t] -  waiting[ctasIndex];
+      if( ctasIndex == 2){
+        var debug = 0;
+      }
     }
   //  excessCapacity.push( capacity);
     queue.push( waiting );
