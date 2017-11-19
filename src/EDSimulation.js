@@ -40,6 +40,25 @@ class EDSimulation{
   	return averages;//simulations;
   }
 
+  accumulation(simulations ){
+    var cumulative = [];
+  	cumulative.push([]);
+  	for( var ctasIndex = 1; ctasIndex < 3;ctasIndex++){//skip ctas1
+  	  var avg_queue =[];
+      var total = 0;
+
+  	  for( var hour = 0; hour < 7*24; hour++){
+  		  for( var n =0; n < sim_size; n++){
+  			  total += simulations[n][hour][ctasIndex];
+  		  }
+  		  avg_queue.push( total);
+  	  }
+
+  	 cumulative.push( avg_queue );
+  	}
+  	return cumulative;//simulations;
+  }
+
   simulationAverageSingle( simulations){
     var averages = [];
     var avg_queue =[];

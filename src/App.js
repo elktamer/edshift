@@ -106,7 +106,7 @@ class App extends Component {
 		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
 		historicalData[this.state.site].treated.show = false;
 
-		historicalData[this.state.site].md_diff = simulation.simulationAverages(simulated.md_diff)
+		historicalData[this.state.site].md_diff = simulation.accumulation(simulated.md_diff)
 		historicalData[this.state.site].md_diff.show = false;
 
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
