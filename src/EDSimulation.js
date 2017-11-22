@@ -1,10 +1,12 @@
 import recordedTreatment from './treatmentRate'
+var jStat = require('jStat').jStat;
 
 var sim_size = 1;
 //TODO: ensure the histogram of the simulation matches a histogram of the known waits
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
+     outputAverages();
     var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
@@ -19,6 +21,7 @@ class EDSimulation{
       simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
       simulations.excessCapacity.push( weekSim.excessCapacity)
     }
+    doMathStuff(simulations.treatmentBySupply);
     return simulations;
   }
 
@@ -113,7 +116,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
       waiting[ctasIndex] = waiting[ctasIndex] + arrival[ctasIndex] ;
       waiting[ctasIndex] = waiting[ctasIndex] - reneged[ctasIndex] ;
-      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t],ctasIndex+1 ), waiting[ctasIndex] );
+      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, treated ), waiting[ctasIndex] );
 
   /* compare values */
       var previousWait = waitArray[ctasIndex][7*24-1];
@@ -174,10 +177,50 @@ function renegCalc(lwbs,ctas, hour){
 	return reneged;
 }
 
-function expectedTreatment(count, ctas){
+function expectedTreatment(count, ctas, previous){
   var record = recordedTreatment.data[count];
   var result = record["ctas"+ctas]/record.count;
+  for( var i =1; i < ctas; i++){
+    var index = "ctas"+i;
+  //  console.log( previous[i-1] +" "+ record[index]/record.count );
+    result -= record[index]/record.count/(i+1);
+  }
 
   return result;
 }
+
+function outputAverages(){
+  for( var count = 2; count <=8; count ++){
+    var record = recordedTreatment.data[count];
+    if( typeof  record !== 'undefined'){
+    var out = "";
+    for( var i =1; i <= 3; i++){
+      var index = "ctas"+i;
+      out +=record[index]/record.count/count+" ";
+    }
+    console.log( count +" "+ out );
+  }
+
+  }
+}
+
+function doMathStuff( treatmentArray ){
+  var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
+    var results = d.map( function( e ){
+      return [e.waiting,e.treated];
+    })
+    return results[0].concat(results[1]).concat(results[2]);
+  });
+
+  var b = treatmentArray[0].map( function(d){
+    return d[0].count;
+  });
+  var x = [0,0,0,0]
+  var r = [0,0,0,0]
+  x = gauss_jacobi(A,b,x,r)
+  x = jStat.lstsq(A,b)
+  console.log( "Solution:"+x);
+
+}
+
 export default EDSimulation
