@@ -21,9 +21,7 @@ shiftdata.forEach( function(shift){
 		else
 			shift.description += " Sunday Monday Tuesday Wednesday Thursday Friday Saturday"
 
-		if( shift.description.toLowerCase().includes("minor")){
-			shift.minor = true;
-		}
+		shift.minor = shift.description.toLowerCase().includes("minor");
 
 	});
 
@@ -111,7 +109,7 @@ class App extends Component {
 
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
 	  historicalData[this.state.site].measuredRate.show = false;
-		
+
 	}
 
   componentDidMount() {

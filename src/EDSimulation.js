@@ -204,21 +204,23 @@ function outputAverages(){
   }
 }
 
+//treated = Math.min( waiting, MdCount * X )
+// filter out values where waiting < ??
 function doMathStuff( treatmentArray ){
   var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-    var results = d.map( function( e ){
-      return [e.waiting,e.treated];
+/*    var results = d.map( function( e ){
+      return Math.max( e.waiting,e.treated);
     })
-    return results[0].concat(results[1]).concat(results[2]);
+    return results;
+    */
+    return [d[0].treated];
   });
 
   var b = treatmentArray[0].map( function(d){
     return d[0].count;
   });
-  var x = [0,0,0,0]
-  var r = [0,0,0,0]
-  x = gauss_jacobi(A,b,x,r)
-  x = jStat.lstsq(A,b)
+
+  var x = jStat.lstsq(A,b)
   console.log( "Solution:"+x);
 
 }

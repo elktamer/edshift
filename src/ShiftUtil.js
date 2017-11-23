@@ -116,22 +116,7 @@ shiftHours(shifts){
 	})
 	return shiftWithHours;
 }
-doctorsPerHour( shiftHours ){
-	var weekly = [];
-	var minor = false;
-	for( var hour = 0; hour < 168; hour++){
-		var mdCount = 0;
-		for( var i =0; i < shiftHours.length;i++ ){
-			if( shiftHours[i].time === hour && shiftHours[i].value === 1 && shiftHours[i].minor === minor)
-				mdCount++;
-		}
-		if(mdCount === 0){
-			console.log( "MD Count should never be zero "+ hour);
-		}
-		weekly.push(mdCount);
-	}
-	return weekly;
-}
+
 //todo: use actual end time instead of assuming 7 hours
 // the issue is making sure that shifts that end after midnight are the next date
 testDoctorsPerHour( coverage ){
@@ -142,7 +127,7 @@ testDoctorsPerHour( coverage ){
 		timeOfWeek.setHours(timeOfWeek.getHours() + 1);
 		var mdCount = 0;
 		coverage.forEach( function(shiftAssignment){
-			if( shiftAssignment.startDate <= timeOfWeek &&  shiftAssignment.endDate >= timeOfWeek ){
+			if( shiftAssignment.startDate <= timeOfWeek &&  shiftAssignment.endDate >= timeOfWeek && shiftAssignment.minor == false){
 				mdCount++;
 			}
 		})
