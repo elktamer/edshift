@@ -22,6 +22,7 @@ class EDSimulation{
       simulations.excessCapacity.push( weekSim.excessCapacity)
     }
     doMathStuff(simulations.treatmentBySupply);
+    outputTreatmentValues(simulations.treatmentBySupply[0]);
     return simulations;
   }
 
@@ -116,7 +117,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       reneged[ctasIndex] = renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
       waiting[ctasIndex] = waiting[ctasIndex] + arrival[ctasIndex] ;
       waiting[ctasIndex] = waiting[ctasIndex] - reneged[ctasIndex] ;
-      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, treated ), waiting[ctasIndex] );
+      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, waiting, treated ), waiting[ctasIndex] );
 
   /* compare values */
       var previousWait = waitArray[ctasIndex][7*24-1];
@@ -176,17 +177,20 @@ function renegCalc(lwbs,ctas, hour){
 	var reneged = lwbs[ctas][hour];
 	return reneged;
 }
-
-function expectedTreatment(count, ctas, previous){
-  var record = recordedTreatment.data[count];
-  var result = record["ctas"+ctas]/record.count;
-  for( var i =1; i < ctas; i++){
-    var index = "ctas"+i;
-  //  console.log( previous[i-1] +" "+ record[index]/record.count );
-    result -= record[index]/record.count/(i+1);
+var coeff = [[0.29569878101760866,0.09278568566889664,0.30726473102945484],
+          [0.08453350984591561,0.18555681077395578,0.6786722181246297,-0.07581651310711282]];
+//t1 = waiting1*coeff[0][0] + mdcount*coeff[0][1] + treated0*coeff[0][2]
+//t2 = waiting2*oeff[1][0] +  mdcount*coeff[1][1] + treated0*coeff[1][2] + treated1*coeff[1][2]
+function expectedTreatment(md_count, ctasNum, waiting, treated){
+  if( ctasNum === 1 ){
+    return waiting[0];
   }
-
-  return result;
+  if( ctasNum === 2 ){
+    return waiting[1]*coeff[0][0] + md_count*coeff[0][1] + treated[0]*coeff[0][2]
+  }
+  if( ctasNum === 3 ){
+    return waiting[2]*coeff[1][0] +  md_count*coeff[1][1] + treated[1]*coeff[1][2] + treated[0]*coeff[1][2]
+  }
 }
 
 function outputAverages(){
@@ -206,23 +210,59 @@ function outputAverages(){
 
 //treated = Math.min( waiting, MdCount * X )
 // filter out values where waiting < ??
+//1 ignore least squares for ctas1
+//2
 function doMathStuff( treatmentArray ){
   var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-/*    var results = d.map( function( e ){
-      return Math.max( e.waiting,e.treated);
-    })
-    return results;
-    */
-    return [d[0].treated];
+    return [d[1].waiting, d[1].count, d[0].treated];
   });
 
   var b = treatmentArray[0].map( function(d){
-    return d[0].count;
+    return d[1].treated;
   });
 
   var x = jStat.lstsq(A,b)
   console.log( "Solution:"+x);
 
-}
+  var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
 
+    return [d[2].waiting, d[2].count, d[1].treated, d[0].treated];
+  });
+
+  var b2 = treatmentArray[0].map( function(d){
+    return d[2].treated;
+  });
+
+  var x2 = jStat.lstsq(A2,b2)
+  console.log( "Solution:"+x2);
+
+}
+function outputTreatmentValues(values){
+  var tarrary = values.map( function(d){
+ 			var sum = d.reduce(function(a, b) {
+ 				return a + b.treated;
+ 			}, 0);
+ 			var results = d.map( function( e ){
+ 				return e.treated;
+ 			})
+ 			results.splice(0,0,d[0].count, sum);
+ 			return results;
+ 		});
+
+ //a: create an object that has an entry for each mdcount.
+ // each entry will have a count of the h(ours with that count, and a sum for the amount of people numTreated for each ctas type
+ // the count divided by the count will give the number to use for the expected treated value
+ // in the simulation
+ var expectedTreatment = {};
+ tarrary.forEach( function(t){
+ 	if( typeof expectedTreatment[t[0]] === 'undefined' ){
+ 		expectedTreatment[t[0]] = {count:0,ctas1:0,ctas2:0,ctas3:0};
+ 	}
+ 	expectedTreatment[t[0]].count++;
+ expectedTreatment[t[0]].ctas1+=t[2];
+ expectedTreatment[t[0]].ctas2+=t[3];
+ expectedTreatment[t[0]].ctas3+=t[4];
+ });
+ console.log( expectedTreatment);
+}
 export default EDSimulation
