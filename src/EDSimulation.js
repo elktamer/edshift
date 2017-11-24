@@ -103,14 +103,14 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
   var mdDiff = [];
   var treatmentBySupply = [];
   var excessCapacity = [];
-//TODO: take lower ctas values into account for each level ??
+
   for( var t = 0; t < 7*24; t++){
     var treated=[], difference=[], treatmentRate=[];
     waiting = waiting.slice(0);
 
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
       waiting[ctasIndex] = waiting[ctasIndex] + poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
-      waiting[ctasIndex] = waiting[ctasIndex] -  renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
+      waiting[ctasIndex] = waiting[ctasIndex] - renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
       treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, waiting, treated ), waiting[ctasIndex] );
 
   /* compare values */
@@ -123,7 +123,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
                             time: t % 24,
                             waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] ,
                             treated: measured })
-//this is including arrivals and lwbs, but shouldn't be??
+
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
       waiting[ctasIndex]  = waiting[ctasIndex]  - treated[ctasIndex] ;
