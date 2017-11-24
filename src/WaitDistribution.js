@@ -86,8 +86,8 @@ if(  typeof realdata === 'undefined' || realdata.length === 0 ||  realdata[0].le
   }
 
   render() {
-    return <svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}>
-    </svg>
+    return <div><h3>{ this.props.title}</h3><svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}>
+    </svg></div>
   }
 }
 

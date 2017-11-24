@@ -180,22 +180,19 @@ class App extends Component {
 			   <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 			  </div>
 			 </Col>
-			<Col span={12} >
-			 <div>
-			  <WaitDistribution data={simulated.waiting} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
-			 </div>
-			</Col>
+
 		 </Row>
 		 <Row gutter={16}>
 			<Col span={12} >
 			 <div>
-			 <WaitDistribution data={[waitingHistogramData]} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			 <WaitDistribution title="Actual" data={[waitingHistogramData]} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 			 </div>
 			</Col>
-		 <Col span={12} >
-			<div>
-			</div>
-		 </Col>
+			<Col span={12} >
+ 			<div>
+ 			 <WaitDistribution title="Simulation" data={simulated.waiting} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+ 			</div>
+ 		 </Col>
 		</Row>
 		</div>
     )
