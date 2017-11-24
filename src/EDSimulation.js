@@ -1,4 +1,3 @@
-import recordedTreatment from './treatmentRate'
 var jStat = require('jStat').jStat;
 
 var sim_size = 1;
@@ -6,7 +5,6 @@ var sim_size = 1;
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
-     outputAverages();
     var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
@@ -189,22 +187,7 @@ function expectedTreatment(md_count, ctasNum, waiting, treated){
     return waiting[1]*coeff[0][0] + md_count*coeff[0][1] + treated[0]*coeff[0][2]
   }
   if( ctasNum === 3 ){
-    return waiting[2]*coeff[1][0] +  md_count*coeff[1][1] + treated[1]*coeff[1][2] + treated[0]*coeff[1][2]
-  }
-}
-
-function outputAverages(){
-  for( var count = 2; count <=8; count ++){
-    var record = recordedTreatment.data[count];
-    if( typeof  record !== 'undefined'){
-    var out = "";
-    for( var i =1; i <= 3; i++){
-      var index = "ctas"+i;
-      out +=record[index]/record.count/count+" ";
-    }
-    console.log( count +" "+ out );
-  }
-
+    return waiting[2]*coeff[1][0] +  md_count*coeff[1][1] + treated[1]*coeff[1][2] + treated[0]*coeff[1][3]
   }
 }
 
