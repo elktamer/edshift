@@ -2,16 +2,16 @@ import React, { Component } from 'react'
 import './App.css'
 import 'rc-slider/assets/index.css';
 
-import Tooltip from 'rc-tooltip';
+//import Tooltip from 'rc-tooltip';
 import Slider from 'rc-slider';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
-const Handle = Slider.Handle;
+//const Handle = Slider.Handle;
 
 
 const style = {  margin: 50 };
-const minor = {  margin: 50, background: 'red' };
+//const minor = {  margin: 50, background: 'red' };
 
 const marks = {
   5: '5am',
@@ -36,7 +36,7 @@ class ShiftEditor extends Component {
   }
 
   createShiftEditor() {
-    const node = this.node
+  
   }
   onShiftChange(d, val){
     this.props.onChange( d, val);

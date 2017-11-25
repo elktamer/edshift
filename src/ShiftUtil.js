@@ -42,12 +42,12 @@ class ShiftUtil{
 //maybe loop through the shifts and days and then the hours?
  shift2Data( shifts) {
 			var radialData = [];
-			for (var hour = 0; hour < 168; hour++) {
 				shifts.forEach(function (shift) {
-					var working = isWorking(hour, shift)
-					radialData.push({ key: shift.code, value: working, time: hour, minor: (shift.minor===true) });
-				});
-			}
+					for (var hour = 0; hour < 168; hour++) {
+						var working = isWorking(hour, shift)
+						radialData.push({ key: shift.code, value: working, time: hour, minor: (shift.minor===true) });
+					}
+				});			
 			return radialData;
 }
 //todo: fix bug that ignores the shift edits
@@ -121,13 +121,12 @@ shiftHours(shifts){
 // the issue is making sure that shifts that end after midnight are the next date
 testDoctorsPerHour( coverage ){
 	var weekly = [];
-	var minor = false;
 	var timeOfWeek = new Date(2017, 10, 5)
 	for (var d = 0; d <168; d++){
 		timeOfWeek.setHours(timeOfWeek.getHours() + 1);
 		var mdCount = 0;
 		coverage.forEach( function(shiftAssignment){
-			if( shiftAssignment.startDate <= timeOfWeek &&  shiftAssignment.endDate >= timeOfWeek && shiftAssignment.minor == false){
+			if( shiftAssignment.startDate <= timeOfWeek &&  shiftAssignment.endDate >= timeOfWeek && shiftAssignment.minor === false){
 				mdCount++;
 			}
 		})
@@ -143,11 +142,11 @@ testDoctorsPerHour( coverage ){
 function clone(obj) {
       if (obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
         return obj;
-
+			var temp;
       if (obj instanceof Date)
-        var temp = new obj.constructor(); //or new Date(obj);
+         temp = new obj.constructor(); //or new Date(obj);
       else
-        var temp = obj.constructor();
+         temp = obj.constructor();
 
       for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {

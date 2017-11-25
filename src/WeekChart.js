@@ -46,9 +46,6 @@ class WeekChart extends Component {
 
     var z = d3.scaleOrdinal(d3.schemeCategory10);
 
-    var yAxisLeft = d3.axisLeft().scale(y)
-    .ticks(5);
-
     d3.select(g)
     .selectAll("g").remove();
 
@@ -74,7 +71,7 @@ class WeekChart extends Component {
 
 //for each data set, get the name, data, and line array
 var allData = this.props.data[this.props.site];
-Object.keys(allData).map(function(key){
+Object.keys(allData).forEach(function(key){
   if( allData[key].show )
     drawLine(  d3.select(g), key, allData[key], linePattern[key], x, y, z)
 });

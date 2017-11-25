@@ -89,7 +89,7 @@ class App extends Component {
 
 
 
-		var test = sUtil.shift2WeekCoverage(this.state.shifts) .filter((d,i) => d.location.name === this.state.site);
+		var test = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
 		if( typeof historicalData[this.state.site].supply !== "undefined")
 			compareArray( testSupply, historicalData[this.state.site].supply[0] )

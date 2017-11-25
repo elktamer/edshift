@@ -160,45 +160,41 @@ function renegCalc(lwbs,ctas, hour){
 	var reneged = lwbs[ctas][hour];
 	return reneged;
 }
-//var coeff = [[0.29569878101760866,0.09278568566889664,0.30726473102945484],
-//          [0.08453350984591561,0.18555681077395578,0.6786722181246297,-0.07581651310711282]];
-var coeff = [[ 0.3553683272345083, 0.02402246505738014, 0.3581954529524639, -0.7185178039604907],
-[0.16744577174848244, 0.04161842651193627, 0.6283488380104464, 0.21564171566457788, -0.7888350931664319]];
-//t1 = waiting1*coeff[0][0] + mdcount*coeff[0][1] + treated0*coeff[0][2]
-//t2 = waiting2*oeff[1][0] +  mdcount*coeff[1][1] + treated0*coeff[1][2] + treated1*coeff[1][2]
+
+//var coeff = [[ 0.3553683272345083, 0.02402246505738014, 0.3581954529524639, -0.7185178039604907],
+//[0.16744577174848244, 0.04161842651193627, 0.6283488380104464, 0.21564171566457788, -0.7888350931664319]];
+var coeff =[
+  [0.4470113491254192,0.8647437593313114,-0.02846483005618934],
+  [0.26232354490499155,0.8522484298750392,0.27552578921257354,-0.659393187476423]];
+
 function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
   if( ctasNum === 1 ){
     return waiting[0];
   }
   if( ctasNum === 2 ){
-    return waiting[1]*coeff[0][0] + md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3]
+    return md_count*coeff[0][0] + treated[0]*coeff[0][1] + reneg*coeff[0][2]
   }
   if( ctasNum === 3 ){
-    return waiting[2]*coeff[1][0] +  md_count*coeff[1][1] + treated[1]*coeff[1][2] + treated[0]*coeff[1][3] + reneg*coeff[1][4]
+    return  md_count*coeff[1][0] + treated[1]*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3]
   }
 }
 
 function doMathStuff( treatmentArray ){
   var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-    return [d[1].waiting, d[1].count, d[0].treated, d[1].reneg];
+    return [ d[1].count, d[0].treated, d[1].reneg];
   });
-
   var b = treatmentArray[0].map( function(d){
     return d[1].treated;
   });
-
   var x = jStat.lstsq(A,b)
   console.log( x);
 
   var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-
-    return [d[2].waiting, d[2].count, d[1].treated, d[0].treated, d[2].reneg];
+    return [ d[2].count, d[1].treated, d[0].treated, d[2].reneg];
   });
-
   var b2 = treatmentArray[0].map( function(d){
     return d[2].treated;
   });
-
   var x2 = jStat.lstsq(A2,b2)
   console.log( x2 );
 }
