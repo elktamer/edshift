@@ -111,7 +111,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
       waiting[ctasIndex] = waiting[ctasIndex] + poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       waiting[ctasIndex] = waiting[ctasIndex] - renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
-      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, waiting, treated ), waiting[ctasIndex] );
+      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, waiting, treated, renegCalc(lwbs, ctasIndex, t) ), waiting[ctasIndex] );
 
   /* compare values */
       var previousWait = waitArray[ctasIndex][7*24-1];
@@ -122,7 +122,8 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       treatmentRate.push( { count: doctorSupply[t],
                             time: t % 24,
                             waiting: waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t] ,
-                            treated: measured })
+                            treated: measured,
+                            reneg: renegCalc(lwbs, ctasIndex, t)})
 
       difference[ctasIndex] = measured - treated[ctasIndex];//positive value means actual is greater than simulated
   /* to here: compare values */
@@ -139,16 +140,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
 
 function poissonArrivals( arrivals, hour, ctas){
 	var rate = arrivals[ctas][hour] ;
-
 	return rate;//poisson( rate ) ;
-}
-var patientsPerHour = [0.5, 1.1, 1.1]; //this is different for each location, as shown by the PLC "expected waiting" values
-
-var base_rate = 2.0;
-function doctorCapacity( supply, hour){
-  return base_rate+Math.log(supply[hour])*3.75;
-
-//    return supply[hour]*1.6;
 }
 
 function poisson( lambda) {
@@ -168,25 +160,27 @@ function renegCalc(lwbs,ctas, hour){
 	var reneged = lwbs[ctas][hour];
 	return reneged;
 }
-var coeff = [[0.29569878101760866,0.09278568566889664,0.30726473102945484],
-          [0.08453350984591561,0.18555681077395578,0.6786722181246297,-0.07581651310711282]];
+//var coeff = [[0.29569878101760866,0.09278568566889664,0.30726473102945484],
+//          [0.08453350984591561,0.18555681077395578,0.6786722181246297,-0.07581651310711282]];
+var coeff = [[ 0.3553683272345083, 0.02402246505738014, 0.3581954529524639, -0.7185178039604907],
+[0.16744577174848244, 0.04161842651193627, 0.6283488380104464, 0.21564171566457788, -0.7888350931664319]];
 //t1 = waiting1*coeff[0][0] + mdcount*coeff[0][1] + treated0*coeff[0][2]
 //t2 = waiting2*oeff[1][0] +  mdcount*coeff[1][1] + treated0*coeff[1][2] + treated1*coeff[1][2]
-function expectedTreatment(md_count, ctasNum, waiting, treated){
+function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
   if( ctasNum === 1 ){
     return waiting[0];
   }
   if( ctasNum === 2 ){
-    return waiting[1]*coeff[0][0] + md_count*coeff[0][1] + treated[0]*coeff[0][2]
+    return waiting[1]*coeff[0][0] + md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3]
   }
   if( ctasNum === 3 ){
-    return waiting[2]*coeff[1][0] +  md_count*coeff[1][1] + treated[1]*coeff[1][2] + treated[0]*coeff[1][3]
+    return waiting[2]*coeff[1][0] +  md_count*coeff[1][1] + treated[1]*coeff[1][2] + treated[0]*coeff[1][3] + reneg*coeff[1][4]
   }
 }
 
 function doMathStuff( treatmentArray ){
   var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-    return [d[1].waiting, d[1].count, d[0].treated];
+    return [d[1].waiting, d[1].count, d[0].treated, d[1].reneg];
   });
 
   var b = treatmentArray[0].map( function(d){
@@ -194,11 +188,11 @@ function doMathStuff( treatmentArray ){
   });
 
   var x = jStat.lstsq(A,b)
-  console.log( "Solution:"+x);
+  console.log( x);
 
   var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
 
-    return [d[2].waiting, d[2].count, d[1].treated, d[0].treated];
+    return [d[2].waiting, d[2].count, d[1].treated, d[0].treated, d[2].reneg];
   });
 
   var b2 = treatmentArray[0].map( function(d){
@@ -206,7 +200,7 @@ function doMathStuff( treatmentArray ){
   });
 
   var x2 = jStat.lstsq(A2,b2)
-  console.log( "Solution:"+x2);
+  console.log( x2 );
 }
 
 export default EDSimulation
