@@ -12,6 +12,7 @@ import shiftdata from './shiftTypes'
 import ShiftUtil from './ShiftUtil'
 import EDSimulation from './EDSimulation'
 import WaitDistribution from './WaitDistribution'
+import ScatterPlot from './ScatterPlot'
 
 import * as d3 from 'd3'
 
@@ -87,8 +88,6 @@ class App extends Component {
     var lwbs = historicalData[this.state.site].lwbs;
 		historicalData[this.state.site].lwbs.show=false;
 
-
-
 		var test = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
 		if( typeof historicalData[this.state.site].supply !== "undefined")
@@ -130,17 +129,7 @@ class App extends Component {
   render() {
     var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
-   var waitingHistogramData = [];
-	 if( typeof historicalData[this.state.site] !== 'undefined'){
-		 for( var h = 0; h < 168; h++){
-			 var hourOfData = [];
-			  for( var c = 0; c < 3; c++){
-					hourOfData.push( historicalData[this.state.site].waiting[c][h] );
-				}
-				waitingHistogramData.push( hourOfData)
-		 }
-
-	 }
+   var waitingHistogramData = parseWaitingData( historicalData[this.state.site] );
     return (
 			<div className="App">
 			 <h2>ED Shifts</h2>
@@ -179,8 +168,11 @@ class App extends Component {
 			  <div>
 			   <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 			  </div>
-			 </Col>
-
+			 </Col><Col span={12} >
+ 			 <div>
+ 			 <ScatterPlot title="MdCount vs treated" data={simulated.treatmentBySupply} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+ 			 </div>
+ 			</Col>
 		 </Row>
 		 <Row gutter={16}>
 			<Col span={12} >
@@ -258,6 +250,28 @@ function compareArray(array1, array2){
 				console.log( "Item " + i +" is different "+array1[i]+" "+array2[i])
 			}
 		}
+}
+
+function  parseWaitingData( siteData ){
+	var data = [];
+	if( typeof siteData !== 'undefined'){
+		for( var h = 0; h < 168; h++){
+			var hourOfData = [];
+			 for( var c = 0; c < 3; c++){
+				 hourOfData.push( siteData.waiting[c][h] );
+			 }
+			 data.push( hourOfData)
+		}
+	}
+	return data;
+}
+
+function parseTreatedData(siteData){
+	var data = [];
+	if( typeof siteData !== 'undefined'){
+		data = siteData[0];
+	}
+	return data;
 }
 
 export default App
