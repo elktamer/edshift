@@ -170,7 +170,7 @@ class App extends Component {
 			  </div>
 			 </Col><Col span={12} >
  			 <div>
- 			 <ScatterPlot title="MdCount vs treated" data={simulated.treatmentBySupply} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+ 			 <ScatterPlot title="MD Count vs Treated" data={simulated.treatmentBySupply} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
  			 </div>
  			</Col>
 		 </Row>

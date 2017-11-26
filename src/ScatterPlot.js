@@ -34,7 +34,7 @@ class ScatterPlot extends Component {
     var y = d3.scaleLinear().range([height, margin.top]);
 
     d3.select(node)
-    .selectAll(".dot").remove();
+    .selectAll("g").remove();
 
     if(  typeof this.props.data === 'undefined' || this.props.data.length === 0 ||  this.props.data[0].length === 0 )
     return;

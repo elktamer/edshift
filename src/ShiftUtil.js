@@ -47,7 +47,7 @@ class ShiftUtil{
 						var working = isWorking(hour, shift)
 						radialData.push({ key: shift.code, value: working, time: hour, minor: (shift.minor===true) });
 					}
-				});			
+				});
 			return radialData;
 }
 //todo: fix bug that ignores the shift edits
@@ -89,6 +89,9 @@ shiftHours(shifts){
 	shifts
 	.forEach(function (d) {
 		d.key = d.id
+		if( d.code === "15"){
+			var debug =0;
+		}
 		d.startDate =  baseDateFormat(d.startTimeString);
 		d.startDate.setHours( d.startDate.getHours() - 6);
 		d.endDate = baseDateFormat(d.endTimeString);
@@ -97,12 +100,12 @@ shiftHours(shifts){
 		var start = baseDateFormat(d.startTimeString).getHours() - 6
 		var minutes =  baseDateFormat(d.startTimeString).getMinutes()
 		if (start < 0)
-			start = start + 23;
+			start = start + 24;
 
 		if( minutes === 59){
 			start = start + 1;
 		}
-		var end = baseDateFormat(d.endTimeString).getHours() - 6-1;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
+		var end = baseDateFormat(d.endTimeString).getHours() - 6;// per convo with Laurie-Ann, the last hour of a shift is spent on admin work
 		minutes =  baseDateFormat(d.endTimeString).getMinutes()
 		if( minutes === 59) end  = end + 1;
 		if (end < 0)
