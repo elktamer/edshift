@@ -164,24 +164,24 @@ function renegCalc(lwbs,ctas, hour){
 //var coeff = [[ 0.3553683272345083, 0.02402246505738014, 0.3581954529524639, -0.7185178039604907],
 //[0.16744577174848244, 0.04161842651193627, 0.6283488380104464, 0.21564171566457788, -0.7888350931664319]];
 var coeff =[
-  [0.4470113491254192,0.8647437593313114,-0.02846483005618934],
-  [0.26232354490499155,0.8522484298750392,0.27552578921257354,-0.659393187476423]];
+  [1.4252392085245382, 0.3364809413295287, 0.17261767203145983, -0.7173196669847957],
+  [1.5234806304220174, 0.5196766219437663, 0.22918501456675308, -0.9083214769421125]];
 
 function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
   if( ctasNum === 1 ){
     return waiting[0];
   }
   if( ctasNum === 2 ){
-    return md_count*coeff[0][0] + treated[0]*coeff[0][1] + reneg*coeff[0][2]
+    return coeff[0][0]+md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3]
   }
   if( ctasNum === 3 ){
-    return  md_count*coeff[1][0] + treated[1]*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3]
+    return coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3]
   }
 }
 
 function doMathStuff( treatmentArray ){
   var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-    return [ d[1].count, d[0].treated, d[1].reneg];
+    return [1, d[1].count, d[0].treated, d[1].reneg];
   });
   var b = treatmentArray[0].map( function(d){
     return d[1].treated;
@@ -190,7 +190,7 @@ function doMathStuff( treatmentArray ){
   console.log( x);
 
   var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-    return [ d[2].count, d[1].treated, d[0].treated, d[2].reneg];
+    return [1, d[2].count,  d[0].treated, d[2].reneg];
   });
   var b2 = treatmentArray[0].map( function(d){
     return d[2].treated;
