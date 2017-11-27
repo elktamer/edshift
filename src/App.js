@@ -74,8 +74,7 @@ class App extends Component {
     this.setState({ brushExtent: d })
   }
   handleSiteChange(d){
-    this.setState({site:d})
-		this.runSimulation()
+    this.setState({site:d},this.runSimulation)
   }
 
   handleShiftEdit(id, val){
@@ -89,8 +88,7 @@ class App extends Component {
       }
     })
 
-		this.setState({shifts:tempShiftData})
-		this.runSimulation();
+		this.setState({shifts:tempShiftData},this.runSimulation)
 
   }
 	runSimulation(){
@@ -101,11 +99,16 @@ class App extends Component {
 
 		var test = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
-		if( typeof historicalData[this.state.site].supply !== "undefined")
-			compareArray( testSupply, historicalData[this.state.site].supply[0] )
-
+		var showSupply;
+		if( !historicalData[this.state.site].supply )
+		{
+			showSupply = false;
+		}
+		else{
+			showSupply =  historicalData[this.state.site].supply.show;
+		}
 		historicalData[this.state.site].supply = [testSupply];
-		historicalData[this.state.site].supply.show = false;
+		historicalData[this.state.site].supply.show = showSupply;
 
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
     historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
@@ -119,7 +122,8 @@ class App extends Component {
 
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
 	  historicalData[this.state.site].measuredRate.show = false;
-
+		
+		this.setState({data:historicalData})
 	}
 
   componentDidMount() {
@@ -129,9 +133,10 @@ class App extends Component {
   }
 
 	onChangeDataSet(e) {
-		historicalData[this.state.site][e.target.name].show=e.target.checked;
-		this.setState({ site:this.state.site})
-
+		if(historicalData[this.state.site][e.target.name] ){
+			historicalData[this.state.site][e.target.name].show=e.target.checked;
+			this.setState({ site:this.state.site})
+		}
 	}
  loadData(datatype) {
 	  var dayCount =[9,9,8,8,9,9,9]; //count for each day of week in lwbs dataset
@@ -177,6 +182,10 @@ class App extends Component {
 	      }
 	    });
 			if(  historicalData[parent.state.site].arrivals && historicalData[parent.state.site].lwbs&& historicalData[parent.state.site].waiting ){
+				var test = sUtil.shift2WeekCoverage(parent.state.shifts).filter((d,i) => d.location.name === parent.state.site);
+				var testSupply = sUtil.testDoctorsPerHour( test )
+				historicalData[parent.state.site].supply = [testSupply];
+				historicalData[parent.state.site].supply.show = false;
 				parent.setState({
 							 data: historicalData
 					 });
