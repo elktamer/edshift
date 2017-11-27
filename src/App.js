@@ -21,9 +21,7 @@ shiftdata.forEach( function(shift){
 			shift.description += " Monday Tuesday Wednesday Thursday Friday "
 		else
 			shift.description += " Sunday Monday Tuesday Wednesday Thursday Friday Saturday"
-
 		shift.minor = shift.description.toLowerCase().includes("minor");
-
 	});
 
 var sUtil = new ShiftUtil();
@@ -48,7 +46,20 @@ class App extends Component {
     this.handleShiftEdit = this.handleShiftEdit.bind(this)
 		this.onChangeDataSet = this.onChangeDataSet.bind(this)
 		this.runSimulation = this.runSimulation.bind(this)
-    this.state = { screenWidth: 1400, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2 }
+		this.loadData = this.loadData.bind(this)
+
+    this.state = { screenWidth: 1400, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2,
+	 data: null}
+  }
+
+	componentWillMount() {
+         this.loadAllData();
+  }
+
+	loadAllData() {
+			 this.loadData("arrivals")
+			 this.loadData("waiting");
+			 this.loadData("lwbs");
   }
 
   onResize() {
@@ -113,9 +124,6 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize, false)
-		loadData("arrivals")
-		loadData("waiting");
-		loadData("lwbs");
 
     this.onResize()
   }
@@ -125,8 +133,63 @@ class App extends Component {
 		this.setState({ site:this.state.site})
 
 	}
+ loadData(datatype) {
+	  var dayCount =[9,9,8,8,9,9,9]; //count for each day of week in lwbs dataset
+    var parent = this;
+	  d3.text("./"+datatype+".csv", function(textString) {
+
+	    var input = d3.csvParseRows(textString);
+	    var location = "";
+	    input.forEach(function(d, row) {
+	      if (d[0] === ""){
+	        d[0] = location;
+	      }else{
+	        location = d[0];
+	        if( typeof historicalData[location] === "undefined"){
+	          historicalData[location] = {};
+	        }
+	        if( typeof historicalData[location][datatype] === "undefined"){
+	          historicalData[location][datatype]=[];
+						historicalData[location][datatype].show=true;
+	        }
+	      }
+	      var modsize = Math.round((d.length-3)/7)
+	      for( var k =0; k < d.length-1; k++){
+	        if( d[1] === "Total") continue;
+	        if (k > 0){
+	          d[k] = +d[k];
+	        }
+	        if( k > 1 ){
+	          var ctasNumber = (k - 2) % modsize;
+	          if( typeof historicalData[location][datatype][ctasNumber] === "undefined"){
+	            historicalData[location][datatype][ctasNumber]=[];
+	          }
+	          if( ctasNumber < ctasMax ){
+	            var dayOfWeek = Math.floor((k-2) / modsize );
+	            var hour = d[1] + dayOfWeek*24
+	            historicalData[location][datatype][ctasNumber][hour]=d[k];
+
+	            if( datatype ==="lwbs" ){
+	              historicalData[location][datatype][ctasNumber][hour]/=dayCount[dayOfWeek];
+	            }
+	          }
+	        }
+	      }
+	    });
+			if(  historicalData[parent.state.site].arrivals && historicalData[parent.state.site].lwbs&& historicalData[parent.state.site].waiting ){
+				parent.setState({
+							 data: historicalData
+					 });
+				 }
+	  });
+	}
+
+
 //TODO: show what the unused capacity is during the simulation; how many hours is the queue length zero
   render() {
+		if (!this.state.data) {
+					 return <div />
+			 }
     var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
    var waitingHistogramData = parseWaitingData( historicalData[this.state.site] );
@@ -145,14 +208,14 @@ class App extends Component {
 			    <Radio value="SHC" />SHC
 		    	<Radio value="ACH" />ACH
 		     </RadioGroup>
-			   <label> <Checkbox defaultChecked name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
-			   <label> <Checkbox defaultChecked name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
-			   <label> <Checkbox defaultChecked name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
-			   <label> <Checkbox defaultChecked name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
-		     <label> <Checkbox defaultChecked name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
-				 <label> <Checkbox defaultChecked name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
-				 <label> <Checkbox defaultChecked name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
-				 <label> <Checkbox defaultChecked name="md_diff" onChange={this.onChangeDataSet} />&nbsp; cum. treatment diff</label>
+			   <label> <Checkbox defaultChecked={historicalData[this.state.site].arrivals.show} name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
+			   <label> <Checkbox defaultChecked={historicalData[this.state.site].waiting.show} name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
+			   <label> <Checkbox defaultChecked={historicalData[this.state.site].lwbs.show} name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
+			   <label> <Checkbox defaultChecked={false} name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
+		     <label> <Checkbox defaultChecked={false} name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+				 <label> <Checkbox defaultChecked={false} name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
+				 <label> <Checkbox defaultChecked={false} name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
+				 <label> <Checkbox defaultChecked={false} name="md_diff" onChange={this.onChangeDataSet} />&nbsp; cum. treatment diff</label>
 
 
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
@@ -198,59 +261,7 @@ class App extends Component {
 //separate component for:
 //selecting location and data types
 //editing the shift times
-function loadData(datatype) {
-  var dayCount =[9,9,8,8,9,9,9]; //count for each day of week in lwbs dataset
 
-  d3.text("./"+datatype+".csv", function(textString) {
-
-    var input = d3.csvParseRows(textString);
-    var location = "";
-    input.forEach(function(d, row) {
-      if (d[0] === ""){
-        d[0] = location;
-      }else{
-        location = d[0];
-        if( typeof historicalData[location] === "undefined"){
-          historicalData[location] = {};
-        }
-        if( typeof historicalData[location][datatype] === "undefined"){
-          historicalData[location][datatype]=[];
-					historicalData[location][datatype].show=true;
-        }
-      }
-      var modsize = Math.round((d.length-3)/7)
-      for( var k =0; k < d.length-1; k++){
-        if( d[1] === "Total") continue;
-        if (k > 0){
-          d[k] = +d[k];
-        }
-        if( k > 1 ){
-          var ctasNumber = (k - 2) % modsize;
-          if( typeof historicalData[location][datatype][ctasNumber] === "undefined"){
-            historicalData[location][datatype][ctasNumber]=[];
-          }
-          if( ctasNumber < ctasMax ){
-            var dayOfWeek = Math.floor((k-2) / modsize );
-            var hour = d[1] + dayOfWeek*24
-            historicalData[location][datatype][ctasNumber][hour]=d[k];
-
-            if( datatype ==="lwbs" ){
-              historicalData[location][datatype][ctasNumber][hour]/=dayCount[dayOfWeek];
-            }
-          }
-        }
-      }
-    });
-  });
-}
-
-function compareArray(array1, array2){
-		for( var i =0; i < array1.length; i++){
-			if( array1[i]!==array2[i]){
-				console.log( "Item " + i +" is different "+array1[i]+" "+array2[i])
-			}
-		}
-}
 
 function  parseWaitingData( siteData ){
 	var data = [];
@@ -265,13 +276,11 @@ function  parseWaitingData( siteData ){
 	}
 	return data;
 }
-
-function parseTreatedData(siteData){
-	var data = [];
-	if( typeof siteData !== 'undefined'){
-		data = siteData[0];
-	}
-	return data;
+function compareArray(array1, array2){
+		for( var i =0; i < array1.length; i++){
+			if( array1[i]!==array2[i]){
+				console.log( "Item " + i +" is different "+array1[i]+" "+array2[i])
+			}
+		}
 }
-
 export default App
