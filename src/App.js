@@ -99,33 +99,40 @@ class App extends Component {
 
 		var test = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( test )
-		var showSupply;
-		if( !historicalData[this.state.site].supply )
-		{
-			showSupply = false;
-		}
-		else{
-			showSupply =  historicalData[this.state.site].supply.show;
-		}
+		var showSupply = this.saveShowValue("supply");
 		historicalData[this.state.site].supply = [testSupply];
 		historicalData[this.state.site].supply.show = showSupply;
 
+
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
-    historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
-		historicalData[this.state.site].simulation.show = true;
 
+		var showSimulation =  this.saveShowValue("simulation");
+	  historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
+		historicalData[this.state.site].simulation.show = showSimulation;
+
+		var showTreated =  this.saveShowValue("treated");
 		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
-		historicalData[this.state.site].treated.show = false;
+		historicalData[this.state.site].treated.show = showTreated;
 
+		var showDiff =  this.saveShowValue("md_diff");
 		historicalData[this.state.site].md_diff = simulation.accumulation(simulated.md_diff)
-		historicalData[this.state.site].md_diff.show = false;
+		historicalData[this.state.site].md_diff.show = showDiff;
 
+		var showMeasured =  this.saveShowValue("measuredRate");
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
-	  historicalData[this.state.site].measuredRate.show = false;
-		
+	  historicalData[this.state.site].measuredRate.show = showMeasured;
+
 		this.setState({data:historicalData})
 	}
-
+ saveShowValue(datatype){
+	 if( !historicalData[this.state.site][datatype] )
+	 {
+		 return false;
+	 }
+	 else{
+		return historicalData[this.state.site][datatype].show;
+	 }
+ }
   componentDidMount() {
     window.addEventListener('resize', this.onResize, false)
 
