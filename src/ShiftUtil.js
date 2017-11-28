@@ -145,7 +145,7 @@ testDoctorsPerHour( coverage ){
 workForHour(hour){
 	if( hour < 0 || hour > 6)
 	 console.log( "bad hour:" +hour);
-	var work = [0.25, 0.75, 2.0, 2.0, 1.0,0.75,.25,0]
+	var work = [0.25,1.25, 2.0, 1.5, 0.8,0.75,.25,0]
 	return work[hour];
 }
 doctorsPerHour( coverage ){
