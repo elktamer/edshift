@@ -89,9 +89,7 @@ shiftHours(shifts){
 	shifts
 	.forEach(function (d) {
 		d.key = d.id
-		if( d.code === "15"){
-			var debug =0;
-		}
+
 		d.startDate =  baseDateFormat(d.startTimeString);
 		d.startDate.setHours( d.startDate.getHours() - 6);
 		d.endDate = baseDateFormat(d.endTimeString);
@@ -143,9 +141,9 @@ testDoctorsPerHour( coverage ){
 	return weekly;
 }
 workForHour(hour){
-	if( hour < 0 || hour > 6)
+	if( hour < 0 || hour > 7)
 	 console.log( "bad hour:" +hour);
-	var work = [0.25,1.25, 2.0, 1.5, 0.8,0.75,.25,0]
+	var work = [0.25,.8, 2.0, 1.8, 0.85,0.75,.25,0]
 	return work[hour];
 }
 doctorsPerHour( coverage ){

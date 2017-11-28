@@ -5,11 +5,11 @@ var sim_size = 1;
 class EDSimulation{
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
-    var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
      lastwait.push(waiting[ctasIndex][7*24-1]);
     }
+    var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     for( var n =0; n < sim_size; n++){
       var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
       lastwait = weekSim[weekSim.length-1]
@@ -20,6 +20,20 @@ class EDSimulation{
       simulations.excessCapacity.push( weekSim.excessCapacity)
     }
     doMathStuff(simulations.treatmentBySupply);
+    lastwait =[];
+    for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
+     lastwait.push(waiting[ctasIndex][7*24-1]);
+    }
+    simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
+    for( var n =0; n < sim_size; n++){
+      var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
+      lastwait = weekSim[weekSim.length-1]
+      simulations.waiting.push(weekSim.queue);
+      simulations.treated.push(weekSim.treated);
+      simulations.md_diff.push(weekSim.md_diff)
+      simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
+      simulations.excessCapacity.push( weekSim.excessCapacity)
+    }
     return simulations;
   }
 
@@ -167,8 +181,8 @@ function renegCalc(lwbs,ctas, hour){
 //var coeff = [[ 0.3553683272345083, 0.02402246505738014, 0.3581954529524639, -0.7185178039604907],
 //[0.16744577174848244, 0.04161842651193627, 0.6283488380104464, 0.21564171566457788, -0.7888350931664319]];
 var coeff =[
-  [1.4252392085245382, 0.3364809413295287, 0.17261767203145983, -0.7173196669847957],
-  [1.5234806304220174, 0.5196766219437663, 0.22918501456675308, -0.9083214769421125]];
+  [1.3484673635191273, 0.36816559601772275, 0.018128936174810803, -0.22635209302352194],
+  [1.4450438893382433, 0.5668601894179749, -0.0536965302704625, -0.4911742607092796]];
 
 function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
   if( ctasNum === 1 ){
@@ -191,6 +205,7 @@ function doMathStuff( treatmentArray ){
   });
   var x = jStat.lstsq(A,b)
   console.log( x);
+  coeff[0] = x;
 
   var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
     return [1, d[2].count,  d[0].treated, d[2].reneg];
@@ -200,6 +215,7 @@ function doMathStuff( treatmentArray ){
   });
   var x2 = jStat.lstsq(A2,b2)
   console.log( x2 );
+  coeff[1]= x2;
 }
 
 export default EDSimulation

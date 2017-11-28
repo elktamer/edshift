@@ -49,12 +49,7 @@ class ScatterPlot extends Component {
     d3.max(data, function(d) {
        return d[2].treated+1.0;
      })]);
-     console.log("min:"+d3.min(data, function(d) {
-        return d[2].treated+1.0;
-      }))
-     console.log("max:"+d3.max(data, function(d) {
-        return d[2].treated+1.0;
-      }))
+     
 //    y.domain([0, 7]);
     d3.select(node).append("g")
     .attr("transform", "translate(" + margin.left + ",0)")
