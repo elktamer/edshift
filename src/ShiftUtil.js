@@ -141,9 +141,11 @@ testDoctorsPerHour( coverage ){
 	return weekly;
 }
 workForHour(hour){
-	if( hour < 0 || hour > 7)
+	if( hour < 0 || hour > 8){
 	 console.log( "bad hour:" +hour);
-	var work = [0.25,.8, 2.0, 1.8, 0.85,0.75,.25,0]
+	 return 0;
+ }
+	var work = [0.25,.8, 2.0, 1.8, 0.85,0.75,.25,0.25, 0]
 	return work[hour];
 }
 doctorsPerHour( coverage ){
