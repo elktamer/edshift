@@ -87,10 +87,10 @@ class App extends Component {
         row.end=val[1];
       }
     })
-
 		this.setState({shifts:tempShiftData},this.runSimulation)
-
   }
+//TODO: use the orginal shift config for the run_correlation
+// save the results used for the ScatterPlot from the correlation call
 	runSimulation(){
 		if( typeof historicalData[this.state.site] === 'undefined') return;
 		var arrivals =historicalData[this.state.site].arrivals;
@@ -103,6 +103,13 @@ class App extends Component {
 		historicalData[this.state.site].supply = [testSupply];
 		historicalData[this.state.site].supply.show = showSupply;
 
+		simulated = simulation.run_correlation( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
+
+		var test = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
+		var testSupply = sUtil.testDoctorsPerHour( test )
+		var showSupply = this.saveShowValue("supply");
+		historicalData[this.state.site].supply = [testSupply];
+		historicalData[this.state.site].supply.show = showSupply;
 
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
 

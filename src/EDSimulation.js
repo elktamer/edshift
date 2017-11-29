@@ -4,27 +4,33 @@ var sim_size = 1;
 //TODO: ensure the histogram of the simulation matches a histogram of the known waits
 class EDSimulation{
 
+   run_correlation( doctorSupply, arrivals, lwbs, waiting){
+     var lastwait =[];
+     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
+      lastwait.push(waiting[ctasIndex][7*24-1]);
+     }
+     var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
+     for( var n =0; n < sim_size; n++){
+       var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
+       lastwait = weekSim[weekSim.length-1]
+       simulations.waiting.push(weekSim.queue);
+       simulations.treated.push(weekSim.treated);
+       simulations.md_diff.push(weekSim.md_diff)
+       simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
+       simulations.excessCapacity.push( weekSim.excessCapacity)
+     }
+     doMathStuff(simulations.treatmentBySupply);
+     return simulations;
+
+   }
+
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
+
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
      lastwait.push(waiting[ctasIndex][7*24-1]);
     }
     var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
-    for( var n =0; n < sim_size; n++){
-      var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
-      lastwait = weekSim[weekSim.length-1]
-      simulations.waiting.push(weekSim.queue);
-      simulations.treated.push(weekSim.treated);
-      simulations.md_diff.push(weekSim.md_diff)
-      simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
-      simulations.excessCapacity.push( weekSim.excessCapacity)
-    }
-    doMathStuff(simulations.treatmentBySupply);
-    lastwait =[];
-    for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
-     lastwait.push(waiting[ctasIndex][7*24-1]);
-    }
-    simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     for( var n =0; n < sim_size; n++){
       var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
       lastwait = weekSim[weekSim.length-1]
