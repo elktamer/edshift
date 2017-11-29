@@ -115,10 +115,6 @@ class App extends Component {
 		var testShifts = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( testShifts )
 
-	//	compareArray( testShifts, origShifts )
-
-		compareArray( testSupply, historicalData[this.state.site].supply[0] )
-
 		var showSupply = this.saveShowValue("supply");
 		historicalData[this.state.site].supply = [testSupply];
 		historicalData[this.state.site].supply.show = showSupply;
