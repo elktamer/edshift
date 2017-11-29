@@ -10,13 +10,9 @@ class EDSimulation{
      }
      var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
      for( var n =0; n < sim_size; n++){
-       var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
+       var weekSim = correlationWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
        lastwait = weekSim[weekSim.length-1]
-       simulations.waiting.push(weekSim.queue);
-       simulations.treated.push(weekSim.treated);
-       simulations.md_diff.push(weekSim.md_diff)
        simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
-       simulations.excessCapacity.push( weekSim.excessCapacity)
      }
      var correlation = doMathStuff(simulations.treatmentBySupply);
      simulations.corrcoeff = correlation;
@@ -159,7 +155,25 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
   }
   return {queue:queue, treated:numTreated, md_diff:mdDiff, treatmentBySupply:treatmentBySupply, excessCapacity:excessCapacity};
 }
+function correlationWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
+  var treatmentBySupply = [];
+  for( var t = 0; t < 7*24; t++){
+    var  treatmentRate=[];
 
+    for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
+      var previousWait = waitArray[ctasIndex][7*24-1];
+      if( t > 0 ){
+        previousWait = waitArray[ctasIndex][t-1]
+      }
+      var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
+
+      treatmentRate.push( { count: doctorSupply[t],  treated: measured,
+      reneg: renegCalc(lwbs, ctasIndex, t)})
+    }
+    treatmentBySupply.push(treatmentRate);
+  }
+  return { treatmentBySupply:treatmentBySupply};
+}
 function poissonArrivals( arrivals, hour, ctas){
 	var rate = arrivals[ctas][hour] ;
 	return rate;//poisson( rate ) ;

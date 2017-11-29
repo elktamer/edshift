@@ -107,21 +107,49 @@ class App extends Component {
 	 var waiting = historicalData[this.state.site].waiting;
 
 	 var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
-   var increment = 0.1;
+   var increment =0.25;
 	 var bestCorrelation = 0;
 	 var bestWeights = [];
-	 var weights = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1];
-	 for( var hour1 =0; hour1 <=8; hour1+=increment){
+	 var weights =
+	 //[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5];
+	 [0.5,2.0,3.0,2.0,1.0,2.0,1.0,0.5]
+	 var startweight = weights.slice(0);
+	 var maxPerHour = 0.5;
+	 for( var hour1=startweight[0]- maxPerHour; hour1 <=startweight[0]+maxPerHour; hour1+=increment){
 		 weights[0] = hour1;
-	 	var origSupply = sUtil.testDoctorsPerHour( origShifts, weights )
-	 	simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting, weights  );
-		if( simulated.corrcoeff > bestCorrelation){
-			bestCorrelation = simulated.corrcoeff;
-			bestWeights = weights.slice(0);
-		}
- 	}
+		 for( var hour2=startweight[1]- maxPerHour; hour2 <=startweight[1]+maxPerHour; hour2+=increment){
+			 weights[1] = hour2;
+			 console.log( hour1+" "+ hour2);
+			 for( var hour3=startweight[2]- maxPerHour; hour3 <=startweight[2]+maxPerHour; hour3+=increment){
+				 weights[2] = hour3;
+				 for( var hour4=startweight[3]- maxPerHour; hour4 <=startweight[3]+maxPerHour; hour4+=increment){
+					 weights[3] = hour4;
+					 for( var hour5=startweight[4]- maxPerHour; hour5 <=startweight[4]+maxPerHour; hour5+=increment){
+						 weights[4] = hour5;
+						 for( var hour6=startweight[5]- maxPerHour; hour6 <=startweight[5]+maxPerHour; hour6+=increment){
+							 weights[5] = hour6;
+							 for( var hour7=startweight[6]- maxPerHour; hour7 <=startweight[6]+maxPerHour; hour7+=increment){
+								 weights[6] = hour7;
+								 for( var hour8=startweight[7]- maxPerHour; hour8 <=startweight[7]+maxPerHour; hour8+=increment){
+									 weights[7] = hour8;
+									 var origSupply = sUtil.testDoctorsPerHour( origShifts, weights )
+									 simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting, weights  );
+									 if( simulated.corrcoeff > bestCorrelation){
+										 bestCorrelation = simulated.corrcoeff;
+										 bestWeights = weights.slice(0);
+										 console.log( "bestCorrelation: "+bestCorrelation+" "+bestWeights);
+
+									 }
+								 }
+							 }
+						 }
+					 }
+				 }
+			 }
+		 }
+	 }
 	this.setState( {bestWeights:bestWeights});
-	console.log( "bestCorrelation: "+bestCorrelation);
+	console.log( "done- bestCorrelation: "+bestCorrelation+" "+bestWeights);
  }
 	runSimulation(){
 		if( typeof historicalData[this.state.site] === 'undefined'){
