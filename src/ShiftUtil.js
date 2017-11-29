@@ -120,7 +120,7 @@ shiftHours(shifts){
 
 //todo: use actual end time instead of assuming 7 hours
 // the issue is making sure that shifts that end after midnight are the next date
-testDoctorsPerHour( coverage ){
+testDoctorsPerHour( coverage, workPerHour  ){
 	var weekly = [];
 	var parent = this;
 	var timeOfWeek = new Date(2017, 10, 5)
@@ -130,7 +130,13 @@ testDoctorsPerHour( coverage ){
 		coverage.forEach( function(shiftAssignment){
 			if( shiftAssignment.startDate <= timeOfWeek &&  shiftAssignment.endDate > timeOfWeek && shiftAssignment.minor === false){
 				var hourWithinShift = Math.floor((timeOfWeek - shiftAssignment.startDate) / (1000*60*60))
-				mdCount += parent.workForHour(hourWithinShift);
+				var work = 0;
+				if( hourWithinShift >= 0 || hourWithinShift <=8){
+					work = workPerHour[hourWithinShift]
+			  }else{
+				 console.log( "bad hour:" +hourWithinShift);
+			  }
+				mdCount += work;
 			}
 		})
 		if(mdCount === 0){
@@ -140,15 +146,8 @@ testDoctorsPerHour( coverage ){
 	}
 	return weekly;
 }
-workForHour(hour){
-	if( hour < 0 || hour > 8){
-	 console.log( "bad hour:" +hour);
-	 return 0;
- }
-	var work = [0.25,.8, 2.0, 1.8, 0.85,0.75,.25,0.25, 0]
-	return work[hour];
-}
-doctorsPerHour( coverage ){
+
+doctorsPerHour( coverage){
 	var weekly = [];
 	var timeOfWeek = new Date(2017, 10, 5)
 	for (var d = 0; d <168; d++){

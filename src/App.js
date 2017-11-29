@@ -47,6 +47,8 @@ class App extends Component {
 		this.onChangeDataSet = this.onChangeDataSet.bind(this)
 		this.runSimulation = this.runSimulation.bind(this)
 		this.loadData = this.loadData.bind(this)
+		this.runHourWeightSearch = this.runHourWeightSearch.bind(this)
+
 		var copyOfHourData = JSON.parse(JSON.stringify(hourData));
 
     this.state = { screenWidth: 1400, screenHeight: 400, hover: "none",
@@ -99,6 +101,28 @@ class App extends Component {
   }
 //TODO: use the orginal shift config for the run_correlation
 // save the results used for the ScatterPlot from the correlation call
+ runHourWeightSearch(){
+	 var arrivals = historicalData[this.state.site].arrivals;
+	 var lwbs = historicalData[this.state.site].lwbs;
+	 var waiting = historicalData[this.state.site].waiting;
+
+	 var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
+   var increment = 0.1;
+	 var bestCorrelation = 0;
+	 var bestWeights = [];
+	 var weights = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1];
+	 for( var hour1 =0; hour1 <=8; hour1+=increment){
+		 weights[0] = hour1;
+	 	var origSupply = sUtil.testDoctorsPerHour( origShifts, weights )
+	 	simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting, weights  );
+		if( simulated.corrcoeff > bestCorrelation){
+			bestCorrelation = simulated.corrcoeff;
+			bestWeights = weights.slice(0);
+		}
+ 	}
+	this.setState( {bestWeights:bestWeights});
+	console.log( "bestCorrelation: "+bestCorrelation);
+ }
 	runSimulation(){
 		if( typeof historicalData[this.state.site] === 'undefined'){
 			return;
@@ -108,12 +132,12 @@ class App extends Component {
     var waiting = historicalData[this.state.site].waiting;
 
 		var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
-		var origSupply = sUtil.testDoctorsPerHour( origShifts )
+		var origSupply = sUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
 		simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
 		this.setState( {treatmentBySupply:simulated.treatmentBySupply})
 
 		var testShifts = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
-		var testSupply = sUtil.testDoctorsPerHour( testShifts )
+		var testSupply = sUtil.testDoctorsPerHour( testShifts,this.state.bestWeights  )
 
 		var showSupply = this.saveShowValue("supply");
 		historicalData[this.state.site].supply = [testSupply];
@@ -204,14 +228,16 @@ class App extends Component {
 	      }
 	    });
 			if(  historicalData[parent.state.site].arrivals && historicalData[parent.state.site].lwbs&& historicalData[parent.state.site].waiting ){
+				parent.runHourWeightSearch()
+
 				var test = sUtil.shift2WeekCoverage(parent.state.shifts).filter((d,i) => d.location.name === parent.state.site);
-				var testSupply = sUtil.testDoctorsPerHour( test )
+				var testSupply = sUtil.testDoctorsPerHour( test, parent.state.bestWeights )
 				historicalData[parent.state.site].supply = [testSupply];
 				historicalData[parent.state.site].supply.show = false;
 				parent.setState({
 							 data: historicalData
 					 });
-				 }
+			}
 	  });
 	}
 

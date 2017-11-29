@@ -3,7 +3,6 @@ var jStat = require('jStat').jStat;
 var sim_size = 1;
 //TODO: ensure the histogram of the simulation matches a histogram of the known waits
 class EDSimulation{
-
    run_correlation( doctorSupply, arrivals, lwbs, waiting){
      var lastwait =[];
      for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
@@ -19,9 +18,9 @@ class EDSimulation{
        simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
        simulations.excessCapacity.push( weekSim.excessCapacity)
      }
-     doMathStuff(simulations.treatmentBySupply);
+     var correlation = doMathStuff(simulations.treatmentBySupply);
+     simulations.corrcoeff = correlation;
      return simulations;
-
    }
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
@@ -201,6 +200,7 @@ function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
     return coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3]
   }
 }
+//TODO: shoehorn this in somewhere: jStat.corrcoeff pearson?
 
 function doMathStuff( treatmentArray ){
   var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
@@ -209,10 +209,13 @@ function doMathStuff( treatmentArray ){
   var b = treatmentArray[0].map( function(d){
     return d[1].treated;
   });
+  var c = treatmentArray[0].map( function(d){
+    return d[1].count;
+  });
   var x = jStat.lstsq(A,b)
-  console.log( x);
   coeff[0] = x;
 
+ var corrcoeff = jStat.corrcoeff( b, c);
   var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
     return [1, d[2].count,  d[0].treated, d[2].reneg];
   });
@@ -220,8 +223,9 @@ function doMathStuff( treatmentArray ){
     return d[2].treated;
   });
   var x2 = jStat.lstsq(A2,b2)
-  console.log( x2 );
   coeff[1]= x2;
+
+  return corrcoeff;
 }
 
 export default EDSimulation
