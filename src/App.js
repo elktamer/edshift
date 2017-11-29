@@ -47,10 +47,18 @@ class App extends Component {
 		this.onChangeDataSet = this.onChangeDataSet.bind(this)
 		this.runSimulation = this.runSimulation.bind(this)
 		this.loadData = this.loadData.bind(this)
+		var copyOfHourData = JSON.parse(JSON.stringify(hourData));
 
-    this.state = { screenWidth: 1400, screenHeight: 400, hover: "none", brushExtent: [0,40], site: "RGH", shifts:hourData, ctas:2,
-	 data: null}
+    this.state = { screenWidth: 1400, screenHeight: 400, hover: "none",
+		 brushExtent: [0,40],
+		 site: "RGH",
+		 shifts:hourData,
+		 originalShifts: copyOfHourData,
+		 ctas:2,
+	   data: null,
+ 		 treatmentBySupply: []}
   }
+
 
 	componentWillMount() {
          this.loadAllData();
@@ -92,26 +100,30 @@ class App extends Component {
 //TODO: use the orginal shift config for the run_correlation
 // save the results used for the ScatterPlot from the correlation call
 	runSimulation(){
-		if( typeof historicalData[this.state.site] === 'undefined') return;
-		var arrivals =historicalData[this.state.site].arrivals;
+		if( typeof historicalData[this.state.site] === 'undefined'){
+			return;
+		}
+		var arrivals = historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
-		historicalData[this.state.site].lwbs.show=false;
+    var waiting = historicalData[this.state.site].waiting;
 
-		var test = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
-		var testSupply = sUtil.testDoctorsPerHour( test )
+		var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
+		var origSupply = sUtil.testDoctorsPerHour( origShifts )
+		simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
+		this.setState( {treatmentBySupply:simulated.treatmentBySupply})
+
+		var testShifts = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
+		var testSupply = sUtil.testDoctorsPerHour( testShifts )
+
+	//	compareArray( testShifts, origShifts )
+
+		compareArray( testSupply, historicalData[this.state.site].supply[0] )
+
 		var showSupply = this.saveShowValue("supply");
 		historicalData[this.state.site].supply = [testSupply];
 		historicalData[this.state.site].supply.show = showSupply;
 
-		simulated = simulation.run_correlation( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
-
-		var test = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
-		var testSupply = sUtil.testDoctorsPerHour( test )
-		var showSupply = this.saveShowValue("supply");
-		historicalData[this.state.site].supply = [testSupply];
-		historicalData[this.state.site].supply.show = showSupply;
-
-		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, historicalData[this.state.site].waiting  );
+		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting  );
 
 		var showSimulation =  this.saveShowValue("simulation");
 	  historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
@@ -256,7 +268,7 @@ class App extends Component {
 			  </div>
 			 </Col><Col span={12} >
  			 <div>
- 			 <ScatterPlot title="MD Count vs Treated" data={simulated.treatmentBySupply} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+ 			 <ScatterPlot title="MD Count vs Treated" data={this.state.treatmentBySupply} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
  			 </div>
  			</Col>
 		 </Row>
@@ -306,4 +318,6 @@ function compareArray(array1, array2){
 			}
 		}
 }
+
+
 export default App
