@@ -58,7 +58,8 @@ class App extends Component {
 		 originalShifts: copyOfHourData,
 		 ctas:2,
 	   data: null,
- 		 treatmentBySupply: []}
+ 		 treatmentBySupply: [],
+	 show:{arrivals:false, waiting:true, lwbs:false, supply:false, simulation:false, measuredRate:false, treated:false, md_diff:false}}
   }
 
 
@@ -195,39 +196,21 @@ function add(a, b) {
 		var testShifts = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( testShifts,this.state.bestWeights  )
 
-		var showSupply = this.saveShowValue("supply");
 		historicalData[this.state.site].supply = [testSupply];
-		historicalData[this.state.site].supply.show = showSupply;
 
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting  );
 
-		var showSimulation =  this.saveShowValue("simulation");
 	  historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
-		historicalData[this.state.site].simulation.show = showSimulation;
 
-		var showTreated =  this.saveShowValue("treated");
 		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
-		historicalData[this.state.site].treated.show = showTreated;
 
-		var showDiff =  this.saveShowValue("md_diff");
 		historicalData[this.state.site].md_diff = simulation.accumulation(simulated.md_diff)
-		historicalData[this.state.site].md_diff.show = showDiff;
 
-		var showMeasured =  this.saveShowValue("measuredRate");
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
-	  historicalData[this.state.site].measuredRate.show = showMeasured;
 
 		this.setState({data:historicalData})
 	}
- saveShowValue(datatype){
-	 if( !historicalData[this.state.site][datatype] )
-	 {
-		 return false;
-	 }
-	 else{
-		return historicalData[this.state.site][datatype].show;
-	 }
- }
+
   componentDidMount() {
     window.addEventListener('resize', this.onResize, false)
 
@@ -236,7 +219,8 @@ function add(a, b) {
 
 	onChangeDataSet(e) {
 		if(historicalData[this.state.site][e.target.name] ){
-			historicalData[this.state.site][e.target.name].show=e.target.checked;
+			var name = e.target.name;
+		//	this.setState({show[e.target.name]:e.target.checked })
 			this.setState({ site:this.state.site})
 		}
 	}
@@ -257,8 +241,7 @@ function add(a, b) {
 	        }
 	        if( typeof historicalData[location][datatype] === "undefined"){
 	          historicalData[location][datatype]=[];
-						historicalData[location][datatype].show=true;
-	        }
+        }
 	      }
 	      var modsize = Math.round((d.length-3)/7)
 	      for( var k =0; k < d.length-1; k++){
@@ -289,8 +272,7 @@ function add(a, b) {
 				var test = sUtil.shift2WeekCoverage(parent.state.shifts).filter((d,i) => d.location.name === parent.state.site);
 				var testSupply = sUtil.testDoctorsPerHour( test, parent.state.bestWeights )
 				historicalData[parent.state.site].supply = [testSupply];
-				historicalData[parent.state.site].supply.show = false;
-				parent.setState({
+			parent.setState({
 							 data: historicalData
 					 });
 			}
@@ -321,19 +303,20 @@ function add(a, b) {
 			    <Radio value="SHC" />SHC
 		    	<Radio value="ACH" />ACH
 		     </RadioGroup>
-			   <label> <Checkbox defaultChecked={historicalData[this.state.site].arrivals.show} name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
-			   <label> <Checkbox defaultChecked={historicalData[this.state.site].waiting.show} name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
-			   <label> <Checkbox defaultChecked={historicalData[this.state.site].lwbs.show} name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
-			   <label> <Checkbox defaultChecked={false} name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
-		     <label> <Checkbox defaultChecked={false} name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
-				 <label> <Checkbox defaultChecked={false} name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
-				 <label> <Checkbox defaultChecked={false} name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
-				 <label> <Checkbox defaultChecked={false} name="md_diff" onChange={this.onChangeDataSet} />&nbsp; cum. treatment diff</label>
+				 //TODO: change this to use: e.g. show.arrivals, which will be the same for all datasets and be passed to the Weekchart
+			   <label> <Checkbox defaultChecked={this.state.show.arrivals} name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
+			   <label> <Checkbox defaultChecked={this.state.show.waiting} name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
+			   <label> <Checkbox defaultChecked={this.state.show.lwbs} name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
+			   <label> <Checkbox defaultChecked={this.state.show.supply} name="supply" onChange={this.onChangeDataSet} />&nbsp; md supply</label>
+		     <label> <Checkbox defaultChecked={this.state.show.simulation} name="simulation" onChange={this.onChangeDataSet} />&nbsp; simulation</label>
+				 <label> <Checkbox defaultChecked={this.state.show.measuredRate} name="measuredRate" onChange={this.onChangeDataSet} />&nbsp; measured</label>
+				 <label> <Checkbox defaultChecked={this.state.show.treated} name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
+				 <label> <Checkbox defaultChecked={this.state.show.md_diff} name="md_diff" onChange={this.onChangeDataSet} />&nbsp; cum. treatment diff</label>
 
 
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
 			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 2]}
-			      site={this.state.site} />
+			      site={this.state.site} show={this.state.show} />
 			  </div>
 			 </Col>
 			 <Col span={4} >
