@@ -3,20 +3,16 @@ var jStat = require('jStat').jStat;
 var sim_size = 1;
 //TODO: ensure the histogram of the simulation matches a histogram of the known waits
 class EDSimulation{
+
+  //create the array of dependent vs independent variables and run the least squares
    run_correlation( doctorSupply, arrivals, lwbs, waiting){
-     var lastwait =[];
-     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
-      lastwait.push(waiting[ctasIndex][7*24-1]);
-     }
-     var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
-     for( var n =0; n < sim_size; n++){
-       var weekSim = correlationWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
-       lastwait = weekSim[weekSim.length-1]
-       simulations.treatmentBySupply.push( weekSim.treatmentBySupply)
-     }
-     var correlation = doMathStuff(simulations.treatmentBySupply);
-     simulations.corrcoeff = correlation;
-     return simulations;
+     var weekSim = correlationWeek( doctorSupply, arrivals, lwbs, waiting);
+     var correlation = doMathStuff(weekSim.treatmentBySupply);
+     var result = {treatmentBySupply:[]};
+     result.treatmentBySupply.push(weekSim.treatmentBySupply);
+     result.correlation = correlation;
+
+     return result;
    }
 
    generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
@@ -155,7 +151,7 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
   }
   return {queue:queue, treated:numTreated, md_diff:mdDiff, treatmentBySupply:treatmentBySupply, excessCapacity:excessCapacity};
 }
-function correlationWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
+function correlationWeek( doctorSupply, arrivals, lwbs, waitArray ){
   var treatmentBySupply = [];
   for( var t = 0; t < 7*24; t++){
     var  treatmentRate=[];
@@ -200,50 +196,40 @@ function renegCalc(lwbs,ctas, hour){
 	return reneged;
 }
 
-//var coeff = [[ 0.3553683272345083, 0.02402246505738014, 0.3581954529524639, -0.7185178039604907],
-//[0.16744577174848244, 0.04161842651193627, 0.6283488380104464, 0.21564171566457788, -0.7888350931664319]];
-var coeff =[
-  [],
-  []];
+var coeff =[[],[]];
 
 function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
-  if( ctasNum === 1 ){
-    return waiting[0];
-  }
-  if( ctasNum === 2 ){
-    return coeff[0][0]+md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4]
-  }
-  if( ctasNum === 3 ){
-    return coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4]
-  }
+  if( ctasNum === 1 ){ return waiting[0]; }
+  if( ctasNum === 2 ){ return coeff[0][0]+ md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4] }
+  if( ctasNum === 3 ){ return coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4] }
 }
 //TODO: want to use the waiting number in the least squares, but it looks like it's multiplied by too small of a value now.
 
 function doMathStuff( treatmentArray ){
-  var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
+  var A = treatmentArray.map( function(d){
     return [1, d[1].count, d[0].treated, d[1].reneg, d[1].waiting];
   });
-  var b = treatmentArray[0].map( function(d){
+  var b = treatmentArray.map( function(d){
     return d[1].treated;
   });
-  var c = treatmentArray[0].map( function(d){
+  var c = treatmentArray.map( function(d){
     return d[1].count;
   });
   var x = jStat.lstsq(A,b)
   coeff[0] = x;
 
  var corrcoeff = jStat.corrcoeff( b, c);
- console.log( "corrcoeff: "+corrcoeff)
-  var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
+
+  var A2 = treatmentArray.filter(function(d){ return true;}).map( function(d){
     return [1, d[2].count, d[0].treated, d[2].reneg, d[2].waiting];
   });
-  var b2 = treatmentArray[0].map( function(d){
+  var b2 = treatmentArray.map( function(d){
     return d[2].treated;
   });
   var x2 = jStat.lstsq(A2,b2)
   coeff[1]= x2;
 
-  return corrcoeff;
+  return corrcoeff;//used during the weight search, only checking for ctas3 so far
 }
 
 export default EDSimulation
