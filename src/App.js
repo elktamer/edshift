@@ -201,11 +201,8 @@ function add(a, b) {
 		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting  );
 
 	  historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
-
 		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
-
 		historicalData[this.state.site].md_diff = simulation.accumulation(simulated.md_diff)
-
 		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
 
 		this.setState({data:historicalData})
@@ -218,11 +215,9 @@ function add(a, b) {
   }
 
 	onChangeDataSet(e) {
-		if(historicalData[this.state.site][e.target.name] ){
-			var name = e.target.name;
-		//	this.setState({show[e.target.name]:e.target.checked })
-			this.setState({ site:this.state.site})
-		}
+		var show = this.state.show;
+		show[e.target.name]=e.target.checked
+  	this.setState(show)
 	}
  loadData(datatype) {
 	  var dayCount =[9,9,8,8,9,9,9]; //count for each day of week in lwbs dataset
