@@ -228,7 +228,7 @@ function doMathStuff( treatmentArray ){
   });
   var x2 = jStat.lstsq(A2,b2)
   coeff[1]= x2;
-
+console.log( x2)
   return corrcoeff;//used during the weight search, only checking for ctas3 so far
 }
 

@@ -118,7 +118,15 @@ class App extends Component {
 	// [0.5,3,5,3,2,3.5,1.5,0 ]//0.8490449006483274
 	//[0.75,3.5,5.5,3.25,2,3.75,2,0]//  0.849183610281257
 	[ 0.65,3.3,5.3,3.15,1.9,3.65,1.8,0] //0.8493002823768165
-	bestWeights = weights
+	var sum = weights.reduce(add, 0);
+
+function add(a, b) {
+    return a + b;
+}
+
+	bestWeights = weights.map(function(d){
+		return d/sum*7;
+	});
 
 	/* var startweight = weights.slice(0);
 	 var maxPerHour = 0.2;
