@@ -167,8 +167,11 @@ function correlationWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
       }
       var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
 
-      treatmentRate.push( { count: doctorSupply[t],  treated: measured,
-      reneg: renegCalc(lwbs, ctasIndex, t)})
+      treatmentRate.push( {
+        count: doctorSupply[t],
+        treated: measured,
+        waiting: waitArray[ctasIndex][t],
+        reneg: renegCalc(lwbs, ctasIndex, t)})
     }
     treatmentBySupply.push(treatmentRate);
   }
@@ -200,25 +203,25 @@ function renegCalc(lwbs,ctas, hour){
 //var coeff = [[ 0.3553683272345083, 0.02402246505738014, 0.3581954529524639, -0.7185178039604907],
 //[0.16744577174848244, 0.04161842651193627, 0.6283488380104464, 0.21564171566457788, -0.7888350931664319]];
 var coeff =[
-  [1.3484673635191273, 0.36816559601772275, 0.018128936174810803, -0.22635209302352194],
-  [1.4450438893382433, 0.5668601894179749, -0.0536965302704625, -0.4911742607092796]];
+  [],
+  []];
 
 function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
   if( ctasNum === 1 ){
     return waiting[0];
   }
   if( ctasNum === 2 ){
-    return coeff[0][0]+md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3]
+    return coeff[0][0]+md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4]
   }
   if( ctasNum === 3 ){
-    return coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3]
+    return coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4]
   }
 }
-//TODO: shoehorn this in somewhere: jStat.corrcoeff pearson?
+//TODO: want to use the waiting number in the least squares, but it looks like it's multiplied by too small of a value now.
 
 function doMathStuff( treatmentArray ){
   var A = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-    return [1, d[1].count, d[0].treated, d[1].reneg];
+    return [1, d[1].count, d[0].treated, d[1].reneg, d[1].waiting];
   });
   var b = treatmentArray[0].map( function(d){
     return d[1].treated;
@@ -230,8 +233,9 @@ function doMathStuff( treatmentArray ){
   coeff[0] = x;
 
  var corrcoeff = jStat.corrcoeff( b, c);
+ console.log( "corrcoeff: "+corrcoeff)
   var A2 = treatmentArray[0].filter(function(d){ return true;}).map( function(d){
-    return [1, d[2].count,  d[0].treated, d[2].reneg];
+    return [1, d[2].count, d[0].treated, d[2].reneg, d[2].waiting];
   });
   var b2 = treatmentArray[0].map( function(d){
     return d[2].treated;
