@@ -3,7 +3,8 @@ import './App.css'
 import * as d3 from 'd3'
 
 //TODO: should doctorSupply be squared lines?
-var linePattern = {arrivals:"2, 4, 1, 2", waiting:"", lwbs:"1,1", simulation:"1,1", supply:"3,3,1,1" };
+var linePattern = {arrivals:"2, 4, 1, 2", waiting:"", lwbs:"1,1", simulation:"1,1", supply:"3,3,1,1",
+ treated: "2,2", measuredRate:"1,4"};
 class WeekChart extends Component {
   constructor(props){
     super(props)
@@ -37,7 +38,7 @@ class WeekChart extends Component {
     .range([0, this.props.size[0]]);
 
     var  y = d3.scaleLinear()
-    .domain([0,14])
+    .domain([-6,6])
     .range([height-30,30]);
 
     var x = d3.scaleLinear()
@@ -85,6 +86,7 @@ Object.keys(allData).forEach(function(key){
 }
 
 function drawLine( g,  name, data, pattern, x, y, z){
+  console.log( "line name: "+name)
   g.selectAll(name)
   .data([0])
   .enter()

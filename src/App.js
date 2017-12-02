@@ -298,7 +298,6 @@ function add(a, b) {
 			    <Radio value="SHC" />SHC
 		    	<Radio value="ACH" />ACH
 		     </RadioGroup>
-				 //TODO: change this to use: e.g. show.arrivals, which will be the same for all datasets and be passed to the Weekchart
 			   <label> <Checkbox defaultChecked={this.state.show.arrivals} name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
 			   <label> <Checkbox defaultChecked={this.state.show.waiting} name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
 			   <label> <Checkbox defaultChecked={this.state.show.lwbs} name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
@@ -310,7 +309,7 @@ function add(a, b) {
 
 
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
-			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight / 2]}
+			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight]}
 			      site={this.state.site} show={this.state.show} />
 			  </div>
 			 </Col>
