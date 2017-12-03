@@ -37,7 +37,7 @@ class WaitDistribution extends Component {
       y = d3.scaleLinear().rangeRound([height, 0]);
 
     var g =  d3.select(node).append("g")
-      .attr("transform", "translate(" + 10+ "," + 10 + ")");
+      .attr("transform", "translate(" + 40+ "," + -30 + ")");
 
     x.domain([0,data.length]);
     y.domain([0, d3.max(data, function(d) {
