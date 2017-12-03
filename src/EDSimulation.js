@@ -198,8 +198,8 @@ var coeff =[[],[]];
 
 function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
   if( ctasNum === 1 ){ return waiting[0]; }
-  if( ctasNum === 2 ){ return coeff[0][0]+ md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4] }
-  if( ctasNum === 3 ){ return coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4] }
+  if( ctasNum === 2 ){ return /*-0.6*/ +coeff[0][0]+ md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4] }
+  if( ctasNum === 3 ){ return /*-0.7*/ +coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4] }
 }
 //TODO: want to use the waiting number in the least squares, but it looks like it's multiplied by too small of a value now.
 
@@ -215,6 +215,7 @@ function doMathStuff( treatmentArray ){
   });
   var x = jStat.lstsq(A,b)
   coeff[0] = x;
+  console.log("updating coefficients "+ x)
 
  var corrcoeff = jStat.corrcoeff( b, c);
 

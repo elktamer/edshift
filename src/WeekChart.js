@@ -38,7 +38,7 @@ class WeekChart extends Component {
     .range([0, this.props.size[0]]);
 
     var  y = d3.scaleLinear()
-    .domain([-6,6])
+    .domain([-2,10])
     .range([height-30,30]);
 
     var x = d3.scaleLinear()
@@ -86,7 +86,6 @@ Object.keys(allData).forEach(function(key){
 }
 
 function drawLine( g,  name, data, pattern, x, y, z){
-  console.log( "line name: "+name)
   g.selectAll(name)
   .data([0])
   .enter()

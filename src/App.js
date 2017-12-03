@@ -12,6 +12,7 @@ import shiftdata from './shiftTypes'
 import ShiftUtil from './ShiftUtil'
 import EDSimulation from './EDSimulation'
 import WaitDistribution from './WaitDistribution'
+import HourProductivityDistribution from './HourProductivityDistribution'
 import ScatterPlot from './ScatterPlot'
 
 import * as d3 from 'd3'
@@ -178,6 +179,10 @@ function add(a, b) {
 		 }
 	 }*/
 	this.setState( {bestWeights:bestWeights});
+	var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
+	var origSupply = sUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
+	simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
+	this.setState( {treatmentBySupply:simulated.treatmentBySupply})
 	console.log( "done- bestCorrelation: "+bestCorrelation+" "+bestWeights);
  }
 	runSimulation(){
@@ -188,10 +193,7 @@ function add(a, b) {
     var lwbs = historicalData[this.state.site].lwbs;
     var waiting = historicalData[this.state.site].waiting;
 
-		var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
-		var origSupply = sUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
-		simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
-		this.setState( {treatmentBySupply:simulated.treatmentBySupply})
+
 
 		var testShifts = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( testShifts,this.state.bestWeights  )
@@ -339,6 +341,17 @@ function add(a, b) {
  			</div>
  		 </Col>
 		</Row>
+		<Row gutter={16}>
+		 <Col span={12} >
+			<div>
+			<HourProductivityDistribution title="Hourly Productivity" data={[this.state.bestWeights]} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			</div>
+		 </Col>
+		 <Col span={12} >
+		 <div>
+		 </div>
+		</Col>
+	 </Row>
 		</div>
     )
   }
