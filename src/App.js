@@ -344,7 +344,7 @@ function add(a, b) {
 		<Row gutter={16}>
 		 <Col span={12} >
 			<div>
-			<HourProductivityDistribution title="Hourly Productivity" data={[this.state.bestWeights]} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			<HourProductivityDistribution title="Hourly Productivity" data={this.state.bestWeights} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 			</div>
 		 </Col>
 		 <Col span={12} >

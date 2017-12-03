@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, {
+  Component
+} from 'react'
 import './App.css'
 
 import * as d3 from 'd3'
@@ -8,7 +10,7 @@ import * as d3 from 'd3'
 
 //TODO: show both ctas2 and ctas3 data at the same time
 class WaitDistribution extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.createWaitDistribution = this.createWaitDistribution.bind(this)
   }
@@ -29,68 +31,57 @@ class WaitDistribution extends Component {
     const width = this.props.size[0]
     const height = this.props.size[1]
 
-    var x = d3.scaleLinear()
-    .domain([0, 25])
-    .rangeRound([0, width]);
+    var data = this.props.data;
 
-var realdata = this.props.data;
-if(  typeof realdata === 'undefined' || realdata.length === 0 ||  realdata[0].length === 0 ) return;//won't work for a single run simulation
-    var combineddata = [];
-    realdata.forEach( function(d){
-      d.forEach(function(r){
-        if( !r.length )
-            combineddata.push(r)
-        else
-          combineddata.push(r[2])
+    var x = d3.scaleLinear().rangeRound([0, width]),
+      y = d3.scaleLinear().rangeRound([height, 0]);
+
+    var g =  d3.select(node).append("g")
+      .attr("transform", "translate(" + 10+ "," + 10 + ")");
+
+    x.domain([0,data.length]);
+    y.domain([0, d3.max(data, function(d) {
+      return d;
+    })]);
+
+    g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+    g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y).ticks(10, "%"))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("text-anchor", "end")
+      .text("Frequency");
+
+    g.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d, i) {
+        return x(i);
       })
-    })
-
-    var rbins = d3.histogram()
-    .domain(x.domain())
-    .thresholds(x.ticks(20))(combineddata);
-
-    var y = d3.scaleLinear()
-    .domain([0, d3.max(rbins, function(d) { return d.length; })])
-    .range([height, 50]);
-
-    d3.select(node)
-      .selectAll(".bar").remove();
-    var bar = d3.select(node)
-      .selectAll(".bar")
-    .data(rbins)
-    .enter().append("g")
-    .attr("class", "bar")
-    .attr("transform", function(d) {
-      return "translate(" + x(d.x0) + "," + (y(d.length) -30)+ ")";
-     });
-
-    bar.append("rect")
-    .attr("x", 1)
-    .attr("width", x(rbins[0].x1) - x(rbins[0].x0) - 1)
-    .attr("height", function(d) {
-      return height - y(d.length);
-     });
-
-    bar.append("text")
-    .attr("dy", ".75em")
-    .attr("y", -10)
-    .attr("x", (x(rbins[0].x1) - x(rbins[0].x0)) / 2)
-    .attr("text-anchor", "middle")
-    .text(function(d) {
-      var percentage = d.length*100.0/combineddata.length
-       return formatCount(percentage)+"%";
-     });
-
-    d3.select(node).append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", "translate(0," +( height-30) + ")")
-    .call(d3.axisBottom(x));
-
+      .attr("y", function(d,i) {
+        return y(d);
+      })
+      .attr("width", function(d,i) {
+        return x(i+1) - x(i);
+      })
+      .attr("height", function(d) {
+        return height - y(d);
+      });
   }
 
   render() {
-    return <div><h3>{ this.props.title}</h3><svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}>
-    </svg></div>
+    return <div > < h3 > {
+        this.props.title
+      } < /h3><svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}> <
+      /svg></div >
   }
 }
 
