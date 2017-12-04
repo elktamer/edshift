@@ -5,7 +5,7 @@ var sim_size = 1;
 class EDSimulation{
 
   //create the array of dependent vs independent variables and run the least squares
-   run_correlation( doctorSupply, arrivals, lwbs, waiting){
+   static run_correlation( doctorSupply, arrivals, lwbs, waiting){
      var weekSim = correlationWeek( doctorSupply, arrivals, lwbs, waiting);
      var leastSquares = doMathStuff(weekSim.treatmentBySupply);
      //add the coefficients to the value returned by "doMathStuff"
@@ -16,7 +16,7 @@ class EDSimulation{
      return result;
    }
 
-   generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting, coefficients){
+   static generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting, coefficients){
 
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
@@ -35,7 +35,7 @@ class EDSimulation{
     return simulations;
   }
 
-  simulationAverages( simulations){
+  static simulationAverages( simulations){
   	var averages = [];
   	averages.push([]);
   	for( var ctasIndex = 1; ctasIndex < 3;ctasIndex++){
@@ -55,7 +55,7 @@ class EDSimulation{
   	return averages;//simulations;
   }
 
-  accumulation(simulations ){
+  static accumulation(simulations ){
     var cumulative = [];
   	cumulative.push([]);
   	for( var ctasIndex = 1; ctasIndex < 3;ctasIndex++){//skip ctas1
@@ -92,7 +92,7 @@ class EDSimulation{
     return averages;//simulations;
   }
 // the treatment rate is the current wait, minus the previous wait, plus the current arrivals
- measuredRate(arrivals, lwbs, waiting){
+ static measuredRate(arrivals, lwbs, waiting){
     var rates=[];
     for( var ctasIndex =0; ctasIndex < 3; ctasIndex++){
       var rate=[];

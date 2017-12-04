@@ -25,15 +25,15 @@ shiftdata.forEach( function(shift){
 		shift.minor = shift.description.toLowerCase().includes("minor");
 	});
 
-var sUtil = new ShiftUtil();
-var hourData = sUtil.shiftHours( shiftdata)
+//var sUtil = new ShiftUtil();
+var hourData = ShiftUtil.shiftHours( shiftdata)
 
-var simulation = new EDSimulation();
+//var simulation = new EDSimulation();
 
 const ctasMax = 3;
 
 var historicalData = {};
-var simulated = [];
+//var simulated = [];
 
 const colorScale = d3.scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
 
@@ -109,13 +109,13 @@ runHourWeightSearch(){
 	var lwbs = historicalData[this.state.site].lwbs;
 	var waiting = historicalData[this.state.site].waiting;
 
-	var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
-	var bestWeights = sUtil.weightSearch( false, arrivals, waiting, lwbs, origShifts)
+	var origShifts = ShiftUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
+	var bestWeights = ShiftUtil.weightSearch( false, arrivals, waiting, lwbs, origShifts)
 
 	this.setState( {bestWeights:bestWeights});
-	var origSupply = sUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
-	var correlationValues = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
-	this.setState( {treatmentBySupply:simulated.treatmentBySupply})
+	var origSupply = ShiftUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
+	var correlationValues = EDSimulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
+//	this.setState( {treatmentBySupply:simulated.treatmentBySupply})
 	this.setState( {coefficients:correlationValues.coefficients});
 }
 
@@ -127,17 +127,17 @@ runHourWeightSearch(){
     var lwbs = historicalData[this.state.site].lwbs;
     var waiting = historicalData[this.state.site].waiting;
 
-		var testShifts = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
-		var testSupply = sUtil.testDoctorsPerHour( testShifts,this.state.bestWeights  )
+		var testShifts = ShiftUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
+		var testSupply = ShiftUtil.testDoctorsPerHour( testShifts,this.state.bestWeights  )
 
 		historicalData[this.state.site].supply = [testSupply];
 
-		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting, this.state.coefficients  );
+		var simulated = EDSimulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting, this.state.coefficients  );
 
-	  historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
-		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);
-		historicalData[this.state.site].md_diff = simulation.accumulation(simulated.md_diff)
-		historicalData[this.state.site].measuredRate = simulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
+	  historicalData[this.state.site].simulation = EDSimulation.simulationAverages(simulated.waiting);
+		historicalData[this.state.site].treated = EDSimulation.simulationAverages(simulated.treated);
+		historicalData[this.state.site].md_diff = EDSimulation.accumulation(simulated.md_diff)
+		historicalData[this.state.site].measuredRate = EDSimulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
 
 		this.setState({data:historicalData})
 	}
@@ -198,8 +198,8 @@ runHourWeightSearch(){
 			if(  historicalData[parent.state.site].arrivals && historicalData[parent.state.site].lwbs&& historicalData[parent.state.site].waiting ){
 				parent.runHourWeightSearch()
 
-				var test = sUtil.shift2WeekCoverage(parent.state.shifts).filter((d,i) => d.location.name === parent.state.site);
-				var testSupply = sUtil.testDoctorsPerHour( test, parent.state.bestWeights )
+				var test = ShiftUtil.shift2WeekCoverage(parent.state.shifts).filter((d,i) => d.location.name === parent.state.site);
+				var testSupply = ShiftUtil.testDoctorsPerHour( test, parent.state.bestWeights )
 				historicalData[parent.state.site].supply = [testSupply];
 			parent.setState({
 							 data: historicalData
@@ -269,7 +269,7 @@ runHourWeightSearch(){
 			</Col>
 			<Col span={12} >
  			<div>
- 			 <WaitDistribution title="Simulation" data={simulated.waiting} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+ 			 <WaitDistribution title="Simulation" data={this.state.data[this.state.site].simulation} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
  			</div>
  		 </Col>
 		</Row>

@@ -54,7 +54,7 @@ class ShiftUtil{
 }
 //todo: fix bug that ignores the shift edits
 //make sure ends of shifts are on the correct date
-shift2WeekCoverage( shifts){
+static shift2WeekCoverage( shifts){
 		  var shiftCoverage = [];
 			var endOfWeek = new Date(2017, 10, 11)
 			var daysOfWeek = [];
@@ -86,7 +86,7 @@ shift2WeekCoverage( shifts){
 			return shiftCoverage;
 }
 
-shiftHours(shifts){
+static shiftHours(shifts){
 	var shiftWithHours = []
 	shifts
 	.forEach(function (d) {
@@ -122,7 +122,7 @@ shiftHours(shifts){
 
 //todo: use actual end time instead of assuming 7 hours
 // the issue is making sure that shifts that end after midnight are the next date
-testDoctorsPerHour( coverage, workPerHour  ){
+static testDoctorsPerHour( coverage, workPerHour  ){
 	var weekly = [];
 	var parent = this;
 	var timeOfWeek = new Date(2017, 10, 5)
@@ -168,7 +168,7 @@ doctorsPerHour( coverage){
 	return weekly;
 }
 //move weight search to here
-weightSearch( search, arrivals, waiting, lwbs, origShifts){
+static weightSearch( search, arrivals, waiting, lwbs, origShifts){
 	var simulation = new EDSimulation();
 
 	var increment =0.1;
