@@ -103,88 +103,21 @@ class App extends Component {
   }
 //TODO: use the orginal shift config for the run_correlation
 // save the results used for the ScatterPlot from the correlation call
- runHourWeightSearch(){
-	 var arrivals = historicalData[this.state.site].arrivals;
-	 var lwbs = historicalData[this.state.site].lwbs;
-	 var waiting = historicalData[this.state.site].waiting;
 
-	 var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
-   var increment =0.1;
-	 var bestCorrelation = 0;
-	 var bestWeights = [];
-	 var weights =
-	 //[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5];
-	// [0.5,2.0,3.0,2.0,1.0,2.0,1.0,0]
-	//[0.5,2.25,3.5,2,1.25,2.5,1.25,0] // 0.8490549799712793
-	//[0.4,2.05,3.3,1.9,1.15,2.3,1.15,0]//0.8499551469927182
-	// [0.5,3,5,3,2,3.5,1.5,0 ]//0.8490449006483274
-	//[0.75,3.5,5.5,3.25,2,3.75,2,0]//  0.849183610281257
-	[ 0.65,3.3,5.3,3.15,1.9,3.65,1.8,0] //0.8493002823768165
-	var sum = weights.reduce(add, 0);
+runHourWeightSearch(){
+	var arrivals = historicalData[this.state.site].arrivals;
+	var lwbs = historicalData[this.state.site].lwbs;
+	var waiting = historicalData[this.state.site].waiting;
 
-function add(a, b) {
-    return a + b;
-}
-
-	bestWeights = weights.map(function(d){
-		return d/sum*7;
-	});
-
-	/* var startweight = weights.slice(0);
-	 var maxPerHour = 0.2;
-	 for( var hour1=startweight[0]- maxPerHour; hour1 <=startweight[0]+maxPerHour; hour1+=increment){
-		 if( hour1 <= 0 ) continue;
-		 weights[0] = hour1;
-		 for( var hour2=startweight[1]- maxPerHour; hour2 <=startweight[1]+maxPerHour; hour2+=increment){
-			 if( hour2 <= 0 ) continue;
-
-			 weights[1] = hour2;
-			 console.log( hour1+" "+ hour2);
-			 for( var hour3=startweight[2]- maxPerHour; hour3 <=startweight[2]+maxPerHour; hour3+=increment){
-				 if( hour3 <= 0 ) continue;
-
-				 weights[2] = hour3;
-				 for( var hour4=startweight[3]- maxPerHour; hour4 <=startweight[3]+maxPerHour; hour4+=increment){
-					 if( hour4 <= 0 ) continue;
-
-					 weights[3] = hour4;
-					 for( var hour5=startweight[4]- maxPerHour; hour5 <=startweight[4]+maxPerHour; hour5+=increment){
-						 if( hour5 <= 0 ) continue;
-
-						 weights[4] = hour5;
-						 for( var hour6=startweight[5]- maxPerHour; hour6 <=startweight[5]+maxPerHour; hour6+=increment){
-							 if( hour6 <= 0 ) continue;
-
-							 weights[5] = hour6;
-							 for( var hour7=startweight[6]- maxPerHour; hour7 <=startweight[6]+maxPerHour; hour7+=increment){
-								 if( hour7 <= 0 ) continue;
-
-								 weights[6] = hour7;
-								 //for( var hour8=startweight[7]; hour8 <=startweight[7]+maxPerHour; hour8+=increment){
-									// weights[7] = hour8;
-									 var origSupply = sUtil.testDoctorsPerHour( origShifts, weights )
-									 simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting, weights  );
-									 if( simulated.corrcoeff > bestCorrelation){
-										 bestCorrelation = simulated.corrcoeff;
-										 bestWeights = weights.slice(0);
-										 console.log( "bestCorrelation: "+bestCorrelation+" "+bestWeights);
-
-									 }
-								 //}
-							 }
-						 }
-					 }
-				 }
-			 }
-		 }
-	 }*/
-	this.setState( {bestWeights:bestWeights});
 	var origShifts = sUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
+	var bestWeights = sUtil.weightSearch( false, arrivals, waiting, lwbs, origShifts)
+
+	this.setState( {bestWeights:bestWeights});
 	var origSupply = sUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
 	simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
 	this.setState( {treatmentBySupply:simulated.treatmentBySupply})
-	console.log( "done- bestCorrelation: "+bestCorrelation+" "+bestWeights);
- }
+}
+
 	runSimulation(){
 		if( typeof historicalData[this.state.site] === 'undefined'){
 			return;
@@ -192,8 +125,6 @@ function add(a, b) {
 		var arrivals = historicalData[this.state.site].arrivals;
     var lwbs = historicalData[this.state.site].lwbs;
     var waiting = historicalData[this.state.site].waiting;
-
-
 
 		var testShifts = sUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = sUtil.testDoctorsPerHour( testShifts,this.state.bestWeights  )
