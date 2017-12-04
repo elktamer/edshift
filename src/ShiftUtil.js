@@ -1,4 +1,6 @@
 import * as d3 from 'd3'
+import EDSimulation from './EDSimulation'
+
 var baseDateFormat = d3.timeParse("%Y-%m-%dT%I:%M:%S.000Z");
 
 function onDay( shift, hour){
@@ -165,7 +167,77 @@ doctorsPerHour( coverage){
 	}
 	return weekly;
 }
+//move weight search to here
+weightSearch( search, arrivals, waiting, lwbs, origShifts){
+	var simulation = new EDSimulation();
 
+	var increment =0.1;
+	var bestCorrelation = 0;
+	var bestWeights = [];
+	var weights = [ 0.65,3.3,5.3,3.15,1.9,3.65,1.8,0] //0.8493002823768165
+
+  var startweight = weights.slice(0);
+	var maxPerHour = 0.2;
+	if( search )
+	for( var hour1=startweight[0]- maxPerHour; hour1 <=startweight[0]+maxPerHour; hour1+=increment){
+		if( hour1 <= 0 ) continue;
+		weights[0] = hour1;
+		for( var hour2=startweight[1]- maxPerHour; hour2 <=startweight[1]+maxPerHour; hour2+=increment){
+			if( hour2 <= 0 ) continue;
+
+			weights[1] = hour2;
+			console.log( hour1+" "+ hour2);
+			for( var hour3=startweight[2]- maxPerHour; hour3 <=startweight[2]+maxPerHour; hour3+=increment){
+				if( hour3 <= 0 ) continue;
+
+				weights[2] = hour3;
+				for( var hour4=startweight[3]- maxPerHour; hour4 <=startweight[3]+maxPerHour; hour4+=increment){
+					if( hour4 <= 0 ) continue;
+
+					weights[3] = hour4;
+					for( var hour5=startweight[4]- maxPerHour; hour5 <=startweight[4]+maxPerHour; hour5+=increment){
+						if( hour5 <= 0 ) continue;
+
+						weights[4] = hour5;
+						for( var hour6=startweight[5]- maxPerHour; hour6 <=startweight[5]+maxPerHour; hour6+=increment){
+							if( hour6 <= 0 ) continue;
+
+							weights[5] = hour6;
+							for( var hour7=startweight[6]- maxPerHour; hour7 <=startweight[6]+maxPerHour; hour7+=increment){
+								if( hour7 <= 0 ) continue;
+
+								weights[6] = hour7;
+								//for( var hour8=startweight[7]; hour8 <=startweight[7]+maxPerHour; hour8+=increment){
+								 // weights[7] = hour8;
+									var origSupply = this.testDoctorsPerHour( origShifts, weights )
+									var simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting, weights  );
+									if( simulated.corrcoeff > bestCorrelation){
+										bestCorrelation = simulated.corrcoeff;
+										bestWeights = weights.slice(0);
+										console.log( "bestCorrelation: "+bestCorrelation+" "+bestWeights);
+
+									}
+								//}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	console.log( "done- bestCorrelation: "+bestCorrelation+" "+bestWeights);
+
+var sum = weights.reduce(add, 0);
+
+function add(a, b) {
+	return a + b;
+}
+
+bestWeights = weights.map(function(d){
+	return d/sum*7;
+});
+return bestWeights;
+}
 }
 function clone(obj) {
       if (obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
