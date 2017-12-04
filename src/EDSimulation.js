@@ -7,15 +7,16 @@ class EDSimulation{
   //create the array of dependent vs independent variables and run the least squares
    run_correlation( doctorSupply, arrivals, lwbs, waiting){
      var weekSim = correlationWeek( doctorSupply, arrivals, lwbs, waiting);
-     var correlation = doMathStuff(weekSim.treatmentBySupply);
+     var leastSquares = doMathStuff(weekSim.treatmentBySupply);
+     //add the coefficients to the value returned by "doMathStuff"
      var result = {treatmentBySupply:[]};
      result.treatmentBySupply.push(weekSim.treatmentBySupply);
-     result.correlation = correlation;
-
+     result.correlation = leastSquares.correlation;
+     result.coefficients = leastSquares.coefficients;
      return result;
    }
 
-   generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting){
+   generate_simulated_queue(doctorSupply, arrivals, lwbs, waiting, coefficients){
 
     var lastwait =[];
     for( var ctasIndex = 0; ctasIndex < 3;ctasIndex++){
@@ -23,7 +24,7 @@ class EDSimulation{
     }
     var simulations = {waiting:[],treated:[],md_diff:[],treatmentBySupply:[], excessCapacity:[]};
     for( var n =0; n < sim_size; n++){
-      var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting);
+      var weekSim = simulatedWeek( doctorSupply, arrivals, lwbs, lastwait, waiting, coefficients);
       lastwait = weekSim[weekSim.length-1]
       simulations.waiting.push(weekSim.queue);
       simulations.treated.push(weekSim.treated);
@@ -107,7 +108,7 @@ class EDSimulation{
   }
 }
 
-function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
+function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray, coefficients ){
   var queue =[];
   var waiting = startWait.slice(0);
   var numTreated = [];
@@ -122,7 +123,9 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
       waiting[ctasIndex] = waiting[ctasIndex] + poissonArrivals(arrivals,t, ctasIndex) ; //simulated arrivals
       waiting[ctasIndex] = waiting[ctasIndex] - renegCalc(lwbs, ctasIndex, t);//todo: simulated lwbs (poisson)
-      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, waiting, treated, renegCalc(lwbs, ctasIndex, t) ), waiting[ctasIndex] );
+      treated[ctasIndex] = Math.min( expectedTreatment(doctorSupply[t], ctasIndex+1, waiting, treated, renegCalc(lwbs, ctasIndex, t),
+      coefficients ),
+            waiting[ctasIndex] );
 
   /* compare values */
       var previousWait = waitArray[ctasIndex][7*24-1];
@@ -149,16 +152,16 @@ function simulatedWeek( doctorSupply, arrivals, lwbs, startWait, waitArray ){
   }
   return {queue:queue, treated:numTreated, md_diff:mdDiff, treatmentBySupply:treatmentBySupply, excessCapacity:excessCapacity};
 }
+//gather the values to be used for the correlation
 function correlationWeek( doctorSupply, arrivals, lwbs, waitArray ){
   var treatmentBySupply = [];
   for( var t = 0; t < 7*24; t++){
     var  treatmentRate=[];
 
     for( var ctasIndex=0; ctasIndex < 3; ctasIndex++){
-      var previousWait = waitArray[ctasIndex][7*24-1];
-      if( t > 0 ){
-        previousWait = waitArray[ctasIndex][t-1]
-      }
+      var previousWait = t > 0 ? waitArray[ctasIndex][t-1] : waitArray[ctasIndex][7*24-1];
+//is this measuring the correct hour or is it shifted by 1 hour?
+//( current mdcount is being compared to change in the previous hour)
       var measured = previousWait - waitArray[ctasIndex][t] + arrivals[ctasIndex][t] - lwbs[ctasIndex][t];
 
       treatmentRate.push( {
@@ -194,9 +197,8 @@ function renegCalc(lwbs,ctas, hour){
 	return reneged;
 }
 
-var coeff =[[],[]];
 
-function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
+function expectedTreatment(md_count, ctasNum, waiting, treated, reneg, coeff){
   if( ctasNum === 1 ){ return waiting[0]; }
   if( ctasNum === 2 ){ return /*-0.6*/ +coeff[0][0]+ md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4] }
   if( ctasNum === 3 ){ return /*-0.7*/ +coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4] }
@@ -204,6 +206,8 @@ function expectedTreatment(md_count, ctasNum, waiting, treated, reneg){
 //TODO: want to use the waiting number in the least squares, but it looks like it's multiplied by too small of a value now.
 
 function doMathStuff( treatmentArray ){
+  var coeff =[[],[]];
+
   var A = treatmentArray.map( function(d){
     return [1, d[1].count, d[0].treated, d[1].reneg, d[1].waiting];
   });
@@ -227,8 +231,10 @@ function doMathStuff( treatmentArray ){
   });
   var x2 = jStat.lstsq(A2,b2)
   coeff[1]= x2;
-console.log( x2)
-  return corrcoeff;//used during the weight search, only checking for ctas3 so far
+  console.log( x2)
+
+  return {correlation: corrcoeff,//used during the weight search, only checking for ctas3 so far
+  coefficients: coeff};
 }
 
 export default EDSimulation

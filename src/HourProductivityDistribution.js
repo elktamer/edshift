@@ -1,14 +1,8 @@
-import React, {
-  Component
-} from 'react'
+import React, {  Component } from 'react'
 import './App.css'
 
 import * as d3 from 'd3'
-//TODO: convert the queue length into waiting time. How?
-// maybe by tracking time in the simulation
-//display the probability distribution and associated info using d3
 
-//TODO: show both ctas2 and ctas3 data at the same time
 class WaitDistribution extends Component {
   constructor(props) {
     super(props)

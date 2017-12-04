@@ -114,8 +114,9 @@ runHourWeightSearch(){
 
 	this.setState( {bestWeights:bestWeights});
 	var origSupply = sUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
-	simulated = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
+	var correlationValues = simulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
 	this.setState( {treatmentBySupply:simulated.treatmentBySupply})
+	this.setState( {coefficients:correlationValues.coefficients});
 }
 
 	runSimulation(){
@@ -131,7 +132,7 @@ runHourWeightSearch(){
 
 		historicalData[this.state.site].supply = [testSupply];
 
-		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting  );
+		simulated = simulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting, this.state.coefficients  );
 
 	  historicalData[this.state.site].simulation = simulation.simulationAverages(simulated.waiting);
 		historicalData[this.state.site].treated = simulation.simulationAverages(simulated.treated);

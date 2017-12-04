@@ -175,7 +175,7 @@ weightSearch( search, arrivals, waiting, lwbs, origShifts){
 	var bestCorrelation = 0;
 	var bestWeights = [];
 	var weights = [ 0.65,3.3,5.3,3.15,1.9,3.65,1.8,0] //0.8493002823768165
-
+//[ 1.0,1.0,1.0,1.0,1.0,1.0,1.0,0]//
   var startweight = weights.slice(0);
 	var maxPerHour = 0.2;
 	if( search )
