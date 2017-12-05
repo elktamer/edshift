@@ -26,9 +26,6 @@ class WeekChart extends Component {
 
   createWeekChart() {
     const g = this.node;
-    if( typeof this.props.data.RGH === "undefined"){
-      return null;
-    }
 
     const height = this.props.size[1];
     const width = this.props.size[0];
@@ -71,7 +68,7 @@ class WeekChart extends Component {
     .call(d3.axisBottom(daysOfWeek));
 
 //for each data set, get the name, data, and line array
-var allData = this.props.data[this.props.site];
+var allData = this.props.data;
 var show =  this.props.show;
 Object.keys(allData).forEach(function(key){
   if( show[key])

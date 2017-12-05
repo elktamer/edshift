@@ -25,15 +25,11 @@ shiftdata.forEach( function(shift){
 		shift.minor = shift.description.toLowerCase().includes("minor");
 	});
 
-//var sUtil = new ShiftUtil();
 var hourData = ShiftUtil.shiftHours( shiftdata)
-
-//var simulation = new EDSimulation();
 
 const ctasMax = 3;
 
-var historicalData = {};
-//var simulated = [];
+//var historicalData = {};
 
 const colorScale = d3.scaleThreshold().domain([5,10,20,30]).range(["#75739F", "#5EAFC6", "#41A368", "#93C464"])
 
@@ -58,6 +54,7 @@ class App extends Component {
 		 shifts:hourData,
 		 originalShifts: copyOfHourData,
 		 ctas:2,
+		 temp: {},
 	   data: null,
  		 treatmentBySupply: [],
 	 show:{arrivals:false, waiting:true, lwbs:false, supply:false, simulation:false, measuredRate:false, treated:false, md_diff:false}}
@@ -105,9 +102,9 @@ class App extends Component {
 // save the results used for the ScatterPlot from the correlation call
 
 runHourWeightSearch(){
-	var arrivals = historicalData[this.state.site].arrivals;
-	var lwbs = historicalData[this.state.site].lwbs;
-	var waiting = historicalData[this.state.site].waiting;
+	var arrivals = this.state.temp[this.state.site].arrivals;
+	var lwbs =this.state.temp[this.state.site].lwbs;
+	var waiting = this.state.temp[this.state.site].waiting;
 
 	var origShifts = ShiftUtil.shift2WeekCoverage(this.state.originalShifts).filter((d,i) => d.location.name === this.state.site);
 	var bestWeights = ShiftUtil.weightSearch( false, arrivals, waiting, lwbs, origShifts)
@@ -120,26 +117,29 @@ runHourWeightSearch(){
 }
 
 	runSimulation(){
-		if( typeof historicalData[this.state.site] === 'undefined'){
+		if( typeof this.state.data[this.state.site] === 'undefined'){
 			return;
 		}
-		var arrivals = historicalData[this.state.site].arrivals;
-    var lwbs = historicalData[this.state.site].lwbs;
-    var waiting = historicalData[this.state.site].waiting;
+		var arrivals =  this.state.data[this.state.site].arrivals;
+    var lwbs =  this.state.data[this.state.site].lwbs;
+    var waiting =  this.state.data[this.state.site].waiting;
 
 		var testShifts = ShiftUtil.shift2WeekCoverage(this.state.shifts).filter((d,i) => d.location.name === this.state.site);
 		var testSupply = ShiftUtil.testDoctorsPerHour( testShifts,this.state.bestWeights  )
 
-		historicalData[this.state.site].supply = [testSupply];
+		var historicalData = this.state.data[this.state.site];
+		historicalData.supply = [testSupply];
 
 		var simulated = EDSimulation.generate_simulated_queue( testSupply, arrivals, lwbs, waiting, this.state.coefficients  );
 
-	  historicalData[this.state.site].simulation = EDSimulation.simulationAverages(simulated.waiting);
-		historicalData[this.state.site].treated = EDSimulation.simulationAverages(simulated.treated);
-		historicalData[this.state.site].md_diff = EDSimulation.accumulation(simulated.md_diff)
-		historicalData[this.state.site].measuredRate = EDSimulation.measuredRate( arrivals, lwbs, historicalData[this.state.site].waiting)
+	  historicalData.simulation = EDSimulation.simulationAverages(simulated.waiting);
+		historicalData.treated = EDSimulation.simulationAverages(simulated.treated);
+		historicalData.md_diff = EDSimulation.accumulation(simulated.md_diff)
+		historicalData.measuredRate = EDSimulation.measuredRate( arrivals, lwbs, historicalData.waiting)
 
-		this.setState({data:historicalData})
+		var temp = this.state.data;
+		temp[this.state.site] == historicalData
+		this.setState({data:temp})
 	}
 
   componentDidMount() {
@@ -156,10 +156,13 @@ runHourWeightSearch(){
  loadData(datatype) {
 	  var dayCount =[9,9,8,8,9,9,9]; //count for each day of week in lwbs dataset
     var parent = this;
-	  d3.text("./"+datatype+".csv", function(textString) {
 
+	  d3.text("./"+datatype+".csv", function(textString) {
+			var historicalData=parent.state.data;
+			if( historicalData === null) historicalData =[]
 	    var input = d3.csvParseRows(textString);
 	    var location = "";
+
 	    input.forEach(function(d, row) {
 	      if (d[0] === ""){
 	        d[0] = location;
@@ -195,14 +198,25 @@ runHourWeightSearch(){
 	        }
 	      }
 	    });
-			if(  historicalData[parent.state.site].arrivals && historicalData[parent.state.site].lwbs&& historicalData[parent.state.site].waiting ){
+			var temp = parent.state.temp;
+
+			Object.keys(historicalData).forEach(function(key){
+				if( !temp[key] )
+					temp[key]={};
+					Object.keys(historicalData[key]).forEach(function(datatype){
+						temp[key][datatype] = historicalData[key][datatype]
+						parent.setState({ temp: temp });
+					});
+			})
+
+			if(  parent.state.temp[parent.state.site].arrivals && parent.state.temp[parent.state.site].lwbs&& parent.state.temp[parent.state.site].waiting ){
 				parent.runHourWeightSearch()
 
 				var test = ShiftUtil.shift2WeekCoverage(parent.state.shifts).filter((d,i) => d.location.name === parent.state.site);
 				var testSupply = ShiftUtil.testDoctorsPerHour( test, parent.state.bestWeights )
-				historicalData[parent.state.site].supply = [testSupply];
+				temp[parent.state.site].supply = [testSupply];
 			parent.setState({
-							 data: historicalData
+							 data: temp
 					 });
 			}
 	  });
@@ -216,7 +230,7 @@ runHourWeightSearch(){
 			 }
     var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
-   var waitingHistogramData = parseWaitingData( historicalData[this.state.site] );
+   var waitingHistogramData = parseWaitingData( this.state.data[this.state.site] );
     return (
 			<div className="App">
 			 <h2>ED Shifts</h2>
@@ -241,9 +255,8 @@ runHourWeightSearch(){
 				 <label> <Checkbox defaultChecked={this.state.show.treated} name="treated" onChange={this.onChangeDataSet} />&nbsp; sim treated</label>
 				 <label> <Checkbox defaultChecked={this.state.show.md_diff} name="md_diff" onChange={this.onChangeDataSet} />&nbsp; cum. treatment diff</label>
 
-
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
-			      colorScale={colorScale} data={historicalData} size={[2*this.state.screenWidth/3, this.state.screenHeight]}
+			      colorScale={colorScale} data={this.state.data[this.state.site]} size={[2*this.state.screenWidth/3, this.state.screenHeight]}
 			      site={this.state.site} show={this.state.show} />
 			  </div>
 			 </Col>
