@@ -112,7 +112,7 @@ runHourWeightSearch(){
 	this.setState( {bestWeights:bestWeights});
 	var origSupply = ShiftUtil.testDoctorsPerHour( origShifts, this.state.bestWeights  )
 	var correlationValues = EDSimulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
-//	this.setState( {treatmentBySupply:simulated.treatmentBySupply})
+	this.setState( {treatmentBySupply:correlationValues.treatmentBySupply})
 	this.setState( {coefficients:correlationValues.coefficients});
 }
 
