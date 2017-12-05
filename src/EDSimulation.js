@@ -200,8 +200,47 @@ function renegCalc(lwbs,ctas, hour){
 
 function expectedTreatment(md_count, ctasNum, waiting, treated, reneg, coeff){
   if( ctasNum === 1 ){ return waiting[0]; }
-  if( ctasNum === 2 ){ return /*-0.6*/ +coeff[0][0]+ md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4] }
-  if( ctasNum === 3 ){ return /*-0.7*/ +coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4] }
+  if( ctasNum === 2 ){ return coeff[0][0]+ md_count*coeff[0][1]  }
+  if( ctasNum === 3 ){ return coeff[1][0]+ md_count*coeff[1][1]  }
+}
+//TODO: want to use the waiting number in the least squares, but it looks like it's multiplied by too small of a value now.
+
+function doMathStuff( treatmentArray ){
+  var coeff =[[],[]];
+
+  var A = treatmentArray.map( function(d){
+    return [1, d[1].count];
+  });
+  var b = treatmentArray.map( function(d){
+    return d[1].treated;
+  });
+  var c = treatmentArray.map( function(d){
+    return d[1].count;
+  });
+  var x = jStat.lstsq(A,b)
+  coeff[0] = x;
+  console.log("updating coefficients "+ x)
+
+ var corrcoeff = jStat.corrcoeff( b, c);
+
+  var A2 = treatmentArray.filter(function(d){ return true;}).map( function(d){
+    return [1, d[2].count];
+  });
+  var b2 = treatmentArray.map( function(d){
+    return d[2].treated;
+  });
+  var x2 = jStat.lstsq(A2,b2)
+  coeff[1]= x2;
+  console.log( x2)
+
+  return {correlation: corrcoeff,//used during the weight search, only checking for ctas3 so far
+  coefficients: coeff};
+}
+/*
+function expectedTreatment(md_count, ctasNum, waiting, treated, reneg, coeff){
+  if( ctasNum === 1 ){ return waiting[0]; }
+  if( ctasNum === 2 ){ return  +coeff[0][0]+ md_count*coeff[0][1] + treated[0]*coeff[0][2] + reneg*coeff[0][3] +waiting[1]*coeff[0][4] }
+  if( ctasNum === 3 ){ return  +coeff[1][0]+ md_count*coeff[1][1] + treated[0]*coeff[1][2] + reneg*coeff[1][3] +waiting[2]*coeff[1][4] }
 }
 //TODO: want to use the waiting number in the least squares, but it looks like it's multiplied by too small of a value now.
 
@@ -236,5 +275,5 @@ function doMathStuff( treatmentArray ){
   return {correlation: corrcoeff,//used during the weight search, only checking for ctas3 so far
   coefficients: coeff};
 }
-
+*/
 export default EDSimulation

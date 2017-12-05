@@ -7,7 +7,7 @@ import * as d3 from 'd3'
 //TODO: convert the queue length into waiting time. How?
 // maybe by tracking time in the simulation
 //display the probability distribution and associated info using d3
-
+//TODO: add a line to show how md count relates to number of treatments
 //TODO: show both ctas2 and ctas3 data at the same time
 class ScatterPlot extends Component {
   constructor(props) {
