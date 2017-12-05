@@ -230,7 +230,7 @@ runHourWeightSearch(){
 			 }
     var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
-   var waitingHistogramData = parseWaitingData( this.state.data[this.state.site] );
+
     return (
 			<div className="App">
 			 <h2>ED Shifts</h2>
@@ -277,7 +277,7 @@ runHourWeightSearch(){
 		 <Row gutter={16}>
 			<Col span={12} >
 			 <div>
-			 <WaitDistribution title="Actual" data={[waitingHistogramData]} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			 <WaitDistribution title="Actual" data={this.state.data[this.state.site].waiting} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 			 </div>
 			</Col>
 			<Col span={12} >
@@ -302,28 +302,6 @@ runHourWeightSearch(){
   }
 }
 
-//todo
-//start with one location, one data type
-//list of constants for data types, array of data types
-//render method to have single check by comparing constants
-//separate component for:
-//selecting location and data types
-//editing the shift times
-
-
-function  parseWaitingData( siteData ){
-	var data = [];
-	if( typeof siteData !== 'undefined'){
-		for( var h = 0; h < 168; h++){
-			var hourOfData = [];
-			 for( var c = 0; c < 3; c++){
-				 hourOfData.push( siteData.waiting[c][h] );
-			 }
-			 data.push( hourOfData)
-		}
-	}
-	return data;
-}
 function compareArray(array1, array2){
 		for( var i =0; i < array1.length; i++){
 			if( array1[i]!==array2[i]){
