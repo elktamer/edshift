@@ -268,12 +268,19 @@ runHourWeightSearch(){
 			  <div>
 			   <ShiftEditor onChange={this.handleShiftEdit} data={filteredShiftData} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
 			  </div>
-			 </Col><Col span={12} >
- 			 <div>
- 			 <ScatterPlot title="MD Count vs Treated" data={this.state.treatmentBySupply} ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
- 			 </div>
- 			</Col>
+			 </Col>
 		 </Row>
+		 <Row gutter={16}>
+			<Col span={12} >
+			 <div>
+			 <ScatterPlot title="Treated vs " data={this.state.treatmentBySupply} field = "count" ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			 </div>
+			</Col><Col span={12} >
+			<div>
+			<ScatterPlot title="Treated vs "  data={this.state.treatmentBySupply} field = "time" ctas={this.state.ctas} size={[this.state.screenWidth/3, this.state.screenHeight / 2]}/>
+			</div>
+		 </Col>
+		</Row>
 		 <Row gutter={16}>
 			<Col span={12} >
 			 <div>

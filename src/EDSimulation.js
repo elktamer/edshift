@@ -166,6 +166,9 @@ function correlationWeek( doctorSupply, arrivals, lwbs, waitArray ){
 
       treatmentRate.push( {
         count: doctorSupply[t],
+        time: t % 24,
+        day: Math.floor(t/24),
+        weekhour: t,
         treated: measured,
         waiting: waitArray[ctasIndex][t],
         reneg: renegCalc(lwbs, ctasIndex, t)})

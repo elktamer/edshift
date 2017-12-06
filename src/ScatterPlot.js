@@ -46,17 +46,14 @@ class ScatterPlot extends Component {
     if (typeof this.props.data === 'undefined' || this.props.data.length === 0 || this.props.data[0].length === 0)
       return;
     var data = this.props.data[0];
+    var field = this.props.field
 
     x.domain(d3.extent(data, function(d) {
-      return d[2].count;
+      return d[2][field];
     }));
-    y.domain([d3.min(data, function(d) {
-        return d[2].treated - 1.0;
-      }),
-      d3.max(data, function(d) {
-        return d[2].treated + 1.0;
-      })
-    ]);
+    y.domain(d3.extent(data, function(d) {
+        return d[2].count/d[2].treated;
+      }));
 
     //    y.domain([0, 7]);
     d3.select(node).append("g")
@@ -66,10 +63,10 @@ class ScatterPlot extends Component {
       .enter().append("circle")
       .attr("r", 5)
       .attr("cx", function(d) {
-        return x(d[2].count);
+        return x(d[2][field]);
       })
       .attr("cy", function(d) {
-        return y(d[2].treated);
+        return y( d[2].count/d[2].treated );
       });
 
     // Add the X Axis
@@ -85,7 +82,7 @@ class ScatterPlot extends Component {
 
   render() {
     return <div > < h3 > {
-        this.props.title
+        this.props.title +" "+this.props.field
       } < /h3><svg ref={node => this.node = node} width={this.props.size[0]} height={this.props.size[1]}> <
       /svg></div >
   }
