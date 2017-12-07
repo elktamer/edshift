@@ -57,12 +57,12 @@ class App extends Component {
 		 temp: {},
 	   data: null,
  		 treatmentBySupply: [],
-	 show:{arrivals:false, waiting:true, lwbs:false, supply:false, simulation:false, measuredRate:false, treated:false, md_diff:false}}
+	 	 show:{arrivals:false, waiting:true, lwbs:false, supply:false, simulation:false, measuredRate:false, treated:false, md_diff:false}
+	 }
   }
 
-
 	componentWillMount() {
-         this.loadAllData();
+  	this.loadAllData();
   }
 
 	loadAllData() {
@@ -83,12 +83,14 @@ class App extends Component {
     this.setState({ brushExtent: d })
   }
   handleSiteChange(d){
-    this.setState({site:d},this.runSimulation)
+    this.setState({site:d},function(){
+				this.runHourWeightSearch()
+				this.runSimulation();
+			}
+		);
   }
 
   handleShiftEdit(id, val){
-    //update shift data
-		console.log( "edit: "+id +" "+val)
 		var tempShiftData = this.state.shifts
     tempShiftData.forEach((row,i) => {
       if( row.id === id){
@@ -114,6 +116,8 @@ runHourWeightSearch(){
 	var correlationValues = EDSimulation.run_correlation( origSupply, arrivals, lwbs, waiting  );
 	this.setState( {treatmentBySupply:correlationValues.treatmentBySupply})
 	this.setState( {coefficients:correlationValues.coefficients});
+	this.setState( {correlation:correlationValues.correlation});
+
 }
 
 	runSimulation(){
@@ -144,15 +148,15 @@ runHourWeightSearch(){
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize, false)
-
     this.onResize()
   }
 
 	onChangeDataSet(e) {
-		var show = this.state.show;
-		show[e.target.name]=e.target.checked
-  	this.setState(show)
+		var change_show = this.state.show;
+		change_show[e.target.name]=e.target.checked
+  	this.setState(change_show)
 	}
+
  loadData(datatype) {
 	  var dayCount =[9,9,8,8,9,9,9]; //count for each day of week in lwbs dataset
     var parent = this;
@@ -230,12 +234,18 @@ runHourWeightSearch(){
 			 }
     var filteredShiftData = this.state.shifts
     .filter((d,i) => d.location.name === this.state.site)
+		var coeff_string = this.state.coefficients.map(
+			function(d){
+				return parseFloat(d).toFixed(3) +" ";
+			})
 
     return (
 			<div className="App">
-			 <h2>ED Shifts</h2>
 			 <Row gutter={16}>
 			  <Col span={4} >
+				<div><h4>Correlation: { parseFloat(this.state.correlation).toFixed(3) }</h4><br/>
+				<h4>Coefficients: {coeff_string}</h4>
+				</div>
 			  </Col>
 			  <Col span={12} >
 			   <div>
@@ -256,7 +266,7 @@ runHourWeightSearch(){
 				 <label> <Checkbox defaultChecked={this.state.show.md_diff} name="md_diff" onChange={this.onChangeDataSet} />&nbsp; cum. treatment diff</label>
 
 			   <WeekChart hoverElement={this.state.hover} onHover={this.onHover}
-			      colorScale={colorScale} data={this.state.data[this.state.site]} size={[2*this.state.screenWidth/3, this.state.screenHeight]}
+			      colorScale={colorScale} data={this.state.data[this.state.site]} size={[2*this.state.screenWidth/3, this.state.screenHeight/2]}
 			      site={this.state.site} show={this.state.show} />
 			  </div>
 			 </Col>
