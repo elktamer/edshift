@@ -52,7 +52,7 @@ class ScatterPlot extends Component {
       return d[2][field];
     }));
     y.domain(d3.extent(data, function(d) {
-        return d[2].count/d[2].treated;
+        return d[2].treated/d[2].count;
       }));
 
     //    y.domain([0, 7]);
@@ -66,7 +66,7 @@ class ScatterPlot extends Component {
         return x(d[2][field]);
       })
       .attr("cy", function(d) {
-        return y( d[2].count/d[2].treated );
+        return y( d[2].treated/d[2].count );
       });
 
     // Add the X Axis

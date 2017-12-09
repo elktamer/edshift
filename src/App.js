@@ -241,6 +241,23 @@ runHourWeightSearch(){
 
     return (
 			<div className="App">
+			<Row gutter={16}>
+			 <Col span={4} >
+			  <div>
+			  </div>
+			 </Col>
+			 <Col span={12} >
+			 <RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
+			 <Radio value="RGH" />RGH
+			 <Radio value="FMC" />FMC
+			 <Radio value="PLC" />PLC
+			 <Radio value="SHC" />SHC
+			 <Radio value="ACH" />ACH
+			</RadioGroup>
+ 			 <div>
+ 			 </div>
+ 			</Col>
+		 </Row>
 			 <Row gutter={16}>
 			  <Col span={4} >
 				<div><h4>Correlation: { parseFloat(this.state.correlation).toFixed(3) }</h4><br/>
@@ -249,13 +266,7 @@ runHourWeightSearch(){
 			  </Col>
 			  <Col span={12} >
 			   <div>
-			    <RadioGroup name="site" selectedValue={this.state.selectedValue} onChange={this.handleSiteChange}>
-			    <Radio value="RGH" />RGH
-			    <Radio value="FMC" />FMC
-			    <Radio value="PLC" />PLC
-			    <Radio value="SHC" />SHC
-		    	<Radio value="ACH" />ACH
-		     </RadioGroup>
+
 			   <label> <Checkbox defaultChecked={this.state.show.arrivals} name="arrivals" onChange={this.onChangeDataSet} />&nbsp; arrivals</label>
 			   <label> <Checkbox defaultChecked={this.state.show.waiting} name="waiting" onChange={this.onChangeDataSet} />&nbsp; waiting</label>
 			   <label> <Checkbox defaultChecked={this.state.show.lwbs} name="lwbs" onChange={this.onChangeDataSet} />&nbsp; lwbs</label>
