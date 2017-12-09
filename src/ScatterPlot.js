@@ -24,6 +24,7 @@ class ScatterPlot extends Component {
   }
 
   createScatterPlot() {
+    var color = d3.scaleOrdinal(d3.schemeCategory20c);
     const node = this.node
 
     var margin = {
@@ -67,7 +68,13 @@ class ScatterPlot extends Component {
       })
       .attr("cy", function(d) {
         return y( d[2].treated/d[2].count );
-      });
+      })
+      .attr("stroke", function(d) {
+                 return color( d[2].time/2 )
+               })
+               .attr("fill", function(d) {
+                 return "none"
+               });
 
     // Add the X Axis
     d3.select(node).append("g")
